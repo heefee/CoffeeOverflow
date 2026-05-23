@@ -1,0 +1,185 @@
+{
+  "424500-CF-001234": {
+    "cadastralRef": "424500-CF-001234",
+    "address": "Str. Memorandumului 28, Cluj-Napoca",
+    "areaSqm": 320,
+    "pugZone": "Mixt central — M1",
+    "landBook": {
+      "number": "CF 45231",
+      "ownersMasked": "S.R.L. Invest Cluj — date mascate (demo)",
+      "encumbrances": ["Fără sarcini înregistrate (demo)"]
+    },
+    "urbanism": {
+      "certificateStatus": "valid",
+      "pugZone": "Mixt central — M1",
+      "restrictions": ["Regim de înălțime P+2", "Fațadă stradă principală"],
+      "existingBuildings": ["Construcție existentă P+1"]
+    },
+    "authorizations": {
+      "existing": [
+        {
+          "id": "af-1",
+          "type": "Acord de funcționare comercial",
+          "authority": "Primăria Cluj-Napoca",
+          "status": "active",
+          "issuedAt": "2021-03-15",
+          "expiresAt": "2026-03-15"
+        }
+      ],
+      "possible": [
+        {
+          "id": "pos-1",
+          "type": "Autorizație de funcționare HoReCa",
+          "authority": "Primăria Cluj-Napoca",
+          "status": "possible",
+          "notes": "Necesită avize DSP și ISU"
+        }
+      ]
+    }
+  },
+  "424500-CF-005678": {
+    "cadastralRef": "424500-CF-005678",
+    "address": "Bd. Eroilor 15, Cluj-Napoca",
+    "areaSqm": 185,
+    "pugZone": "Comercial — C1",
+    "landBook": {
+      "number": "CF 88102",
+      "ownersMasked": "P.F. Pop A. — date mascate (demo)",
+      "encumbrances": ["Ipotecă bancară înregistrată"]
+    },
+    "urbanism": {
+      "certificateStatus": "expired",
+      "pugZone": "Comercial — C1",
+      "restrictions": ["Destinație comercială parter", "Acces pietonal obligatoriu"],
+      "existingBuildings": ["Spațiu comercial parter"]
+    },
+    "authorizations": {
+      "existing": [],
+      "possible": [
+        {
+          "id": "pos-1",
+          "type": "Certificat de urbanism",
+          "authority": "Primăria Cluj-Napoca",
+          "status": "possible"
+        },
+        {
+          "id": "pos-2",
+          "type": "Autorizație de funcționare",
+          "authority": "Primăria Cluj-Napoca",
+          "status": "possible"
+        }
+      ]
+    }
+  },
+  "424500-CF-009012": {
+    "cadastralRef": "424500-CF-009012",
+    "address": "Piața Unirii 1, Cluj-Napoca",
+    "areaSqm": 520,
+    "pugZone": "Mixt cu linii comerciale — M2",
+    "landBook": {
+      "number": "CF 12045",
+      "ownersMasked": "S.R.L. Centru Unirii — date mascate (demo)",
+      "encumbrances": ["Servitute trecere utilități"]
+    },
+    "urbanism": {
+      "certificateStatus": "valid",
+      "pugZone": "Mixt cu linii comerciale — M2",
+      "restrictions": ["Monument istoric în zonă tampon", "P+3 maxim"],
+      "existingBuildings": ["Clădire istorică restaurată P+2"]
+    },
+    "authorizations": {
+      "existing": [
+        {
+          "id": "af-1",
+          "type": "Autorizație de funcționare restaurant",
+          "authority": "Primăria Cluj-Napoca",
+          "status": "active",
+          "issuedAt": "2020-11-01",
+          "expiresAt": "2025-11-01",
+          "notes": "Expiră în curând — activați notificări (viitor)"
+        },
+        {
+          "id": "af-2",
+          "type": "Aviz sanitar DSP",
+          "authority": "DSP Cluj",
+          "status": "active",
+          "issuedAt": "2020-10-20",
+          "expiresAt": "2025-10-20"
+        }
+      ],
+      "possible": [
+        {
+          "id": "pos-1",
+          "type": "Reautorizare ISU",
+          "authority": "ISU Cluj",
+          "status": "possible",
+          "notes": "La schimbare destinație interior"
+        }
+      ]
+    }
+  },
+  "424500-CF-003456": {
+    "cadastralRef": "424500-CF-003456",
+    "address": "Calea Turzii 88, Cluj-Napoca",
+    "areaSqm": 890,
+    "pugZone": "Locuințe — L2",
+    "landBook": {
+      "number": "CF 77340",
+      "ownersMasked": "P.F. Ionescu M. — date mascate (demo)",
+      "encumbrances": ["Fără sarcini înregistrate (demo)"]
+    },
+    "urbanism": {
+      "certificateStatus": "missing",
+      "pugZone": "Locuințe — L2",
+      "restrictions": ["Teren în intravilan", "Posibilă schimbare destinație cu CU"],
+      "existingBuildings": ["Teren fără construcții"]
+    },
+    "authorizations": {
+      "existing": [],
+      "possible": [
+        {
+          "id": "pos-1",
+          "type": "Certificat de urbanism",
+          "authority": "Primăria Cluj-Napoca",
+          "status": "possible"
+        },
+        {
+          "id": "pos-2",
+          "type": "Autorizație de construire",
+          "authority": "Primăria Cluj-Napoca",
+          "status": "possible"
+        }
+      ]
+    }
+  },
+  "424500-CF-007890": {
+    "cadastralRef": "424500-CF-007890",
+    "address": "Str. Observatorului 34, Cluj-Napoca",
+    "areaSqm": 240,
+    "pugZone": "Servicii publice — SP",
+    "landBook": {
+      "number": "CF 33421",
+      "ownersMasked": "S.R.L. Tech Hub — date mascate (demo)",
+      "encumbrances": ["Fără sarcini înregistrate (demo)"]
+    },
+    "urbanism": {
+      "certificateStatus": "valid",
+      "pugZone": "Servicii publice — SP",
+      "restrictions": ["Acces auto lateral", "Parcare 2 locuri"],
+      "existingBuildings": ["Spațiu birouri P+1"]
+    },
+    "authorizations": {
+      "existing": [
+        {
+          "id": "af-1",
+          "type": "Acord de funcționare",
+          "authority": "Primăria Cluj-Napoca",
+          "status": "active",
+          "issuedAt": "2023-01-10",
+          "expiresAt": "2028-01-10"
+        }
+      ],
+      "possible": []
+    }
+  }
+}

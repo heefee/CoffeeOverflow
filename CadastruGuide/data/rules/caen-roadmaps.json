@@ -1,0 +1,210 @@
+[
+  {
+    "caen": "5630",
+    "label": "Baruri și alte activități de servire a băuturilor",
+    "category": "HoReCa",
+    "steps": [
+      {
+        "id": "cu",
+        "title": "Certificat de urbanism",
+        "authority": "Primăria Cluj-Napoca",
+        "description": "Act de informare privind regimul juridic, economic și tehnic al imobilului.",
+        "docs": ["Extras CF (max. 30 zile)", "Plan de încadrare", "Cerere tip F.1"],
+        "estimatedDays": 30,
+        "legalRef": "Legea 350/2001",
+        "edirectUrl": "https://edirect.e-guvernare.ro/"
+      },
+      {
+        "id": "dsp",
+        "title": "Aviz / Autorizație sanitară DSP",
+        "authority": "DSP Cluj",
+        "description": "Verificarea condițiilor de igienă pentru activități cu alimente și băuturi.",
+        "docs": ["Plan amplasament", "Fișă tehnică spațiu", "Contract locațiune/proprietate"],
+        "estimatedDays": 20,
+        "dependsOn": ["cu"],
+        "edirectUrl": "https://edirect.e-guvernare.ro/"
+      },
+      {
+        "id": "isu",
+        "title": "Aviz securitate la incendiu",
+        "authority": "ISU Cluj",
+        "description": "Punct de vedere privind obligativitatea autorizației PSI pentru spații cu public.",
+        "docs": ["Plan evacuare", "Memoriu tehnic", "Date spațiu (suprafață, etaj)"],
+        "estimatedDays": 15,
+        "dependsOn": ["cu"],
+        "edirectUrl": "https://edirect.e-guvernare.ro/"
+      },
+      {
+        "id": "primarie_af",
+        "title": "Autorizație de funcționare",
+        "authority": "Primăria Cluj-Napoca",
+        "description": "Autorizație pentru activități HoReCa (servire băuturi/alimentație publică).",
+        "docs": ["Avize DSP", "Aviz ISU", "Certificat urbanism", "Dovadă ONRC"],
+        "estimatedDays": 10,
+        "dependsOn": ["dsp", "isu"],
+        "edirectUrl": "https://edirect.e-guvernare.ro/"
+      }
+    ]
+  },
+  {
+    "caen": "5610",
+    "label": "Restaurante",
+    "category": "HoReCa",
+    "steps": [
+      {
+        "id": "cu",
+        "title": "Certificat de urbanism",
+        "authority": "Primăria Cluj-Napoca",
+        "description": "Verificare destinație și regim urbanistic pentru restaurant.",
+        "docs": ["Extras CF", "Plan cadastral", "Cerere F.1"],
+        "estimatedDays": 30,
+        "legalRef": "Legea 350/2001",
+        "edirectUrl": "https://edirect.e-guvernare.ro/"
+      },
+      {
+        "id": "dsp",
+        "title": "Autorizație sanitară DSP",
+        "authority": "DSP Cluj",
+        "description": "Autorizație pentru preparare și servire alimente.",
+        "docs": ["Plan flux alimentar", "Proiect ventilație", "Contract spațiu"],
+        "estimatedDays": 25,
+        "dependsOn": ["cu"]
+      },
+      {
+        "id": "dsvsa",
+        "title": "Aviz DSVSA (dacă e cazul)",
+        "authority": "DSVSA Cluj",
+        "description": "Pentru produse de origine animală — verificare lanț rece.",
+        "docs": ["Listă furnizori", "Plan HACCP preliminar"],
+        "estimatedDays": 15,
+        "dependsOn": ["dsp"]
+      },
+      {
+        "id": "isu",
+        "title": "Autorizație / Aviz ISU",
+        "authority": "ISU Cluj",
+        "description": "Securitate la incendiu pentru spațiu cu public.",
+        "docs": ["Plan evacuare", "Detecție/incendiere"],
+        "estimatedDays": 20,
+        "dependsOn": ["cu"]
+      },
+      {
+        "id": "primarie_af",
+        "title": "Autorizație de funcționare restaurant",
+        "authority": "Primăria Cluj-Napoca",
+        "description": "Autorizație locală pentru restaurant.",
+        "docs": ["Toate avizele", "ONRC", "CU"],
+        "estimatedDays": 10,
+        "dependsOn": ["dsp", "isu"]
+      }
+    ]
+  },
+  {
+    "caen": "4711",
+    "label": "Comerț cu amănuntul în magazine nespecializate",
+    "category": "Retail",
+    "steps": [
+      {
+        "id": "cu",
+        "title": "Certificat de urbanism",
+        "authority": "Primăria Cluj-Napoca",
+        "description": "Informare regim urbanistic pentru spațiu comercial.",
+        "docs": ["Extras CF", "Plan încadrare"],
+        "estimatedDays": 30,
+        "legalRef": "Legea 350/2001"
+      },
+      {
+        "id": "dsp",
+        "title": "Aviz sanitar DSP (dacă se vând alimente)",
+        "authority": "DSP Cluj",
+        "description": "Necesar dacă activitatea include alimente perisabile.",
+        "docs": ["Plan spațiu", "Fișă produse"],
+        "estimatedDays": 15,
+        "dependsOn": ["cu"]
+      },
+      {
+        "id": "isu",
+        "title": "Aviz ISU",
+        "authority": "ISU Cluj",
+        "description": "Pentru spații comerciale cu acces public.",
+        "docs": ["Suprafață", "Nr. posturi lucru"],
+        "estimatedDays": 10,
+        "dependsOn": ["cu"]
+      },
+      {
+        "id": "primarie_af",
+        "title": "Acord de funcționare",
+        "authority": "Primăria Cluj-Napoca",
+        "description": "Acord pentru activități comerciale (non-HoReCa).",
+        "docs": ["Avize", "Contract spațiu", "ONRC"],
+        "estimatedDays": 7,
+        "dependsOn": ["cu"]
+      }
+    ]
+  },
+  {
+    "caen": "6820",
+    "label": "Închirierea și subînchirierea bunurilor imobiliare proprii sau închiriate",
+    "category": "Imobiliare",
+    "steps": [
+      {
+        "id": "cu",
+        "title": "Certificat de urbanism (la nevoie)",
+        "authority": "Primăria Cluj-Napoca",
+        "description": "Pentru schimbare destinație sau amenajări.",
+        "docs": ["Extras CF", "Cerere F.1"],
+        "estimatedDays": 30
+      },
+      {
+        "id": "onrc",
+        "title": "Înregistrare / actualizare CAEN ONRC",
+        "authority": "ONRC",
+        "description": "Activitatea 6820 pe sediu sau punct de lucru.",
+        "docs": ["Cerere ONRC", "Act constitutiv"],
+        "estimatedDays": 5
+      },
+      {
+        "id": "primarie_af",
+        "title": "Notificare / acord funcționare",
+        "authority": "Primăria Cluj-Napoca",
+        "description": "Dacă spațiul este destinat activității comerciale a chiriașului.",
+        "docs": ["Contract închiriere", "Date chiriaș"],
+        "estimatedDays": 7,
+        "dependsOn": ["onrc"]
+      }
+    ]
+  },
+  {
+    "caen": "9602",
+    "label": "Coafură și alte tratamente de înfrumusețare",
+    "category": "Servicii",
+    "steps": [
+      {
+        "id": "cu",
+        "title": "Certificat de urbanism",
+        "authority": "Primăria Cluj-Napoca",
+        "description": "Verificare destinație spațiu servicii.",
+        "docs": ["Extras CF", "Plan încadrare"],
+        "estimatedDays": 30
+      },
+      {
+        "id": "dsp",
+        "title": "Aviz sanitar DSP",
+        "authority": "DSP Cluj",
+        "description": "Condiții igienico-sanitare salon.",
+        "docs": ["Plan dotări", "Proceduri dezinfectare"],
+        "estimatedDays": 15,
+        "dependsOn": ["cu"]
+      },
+      {
+        "id": "primarie_af",
+        "title": "Acord de funcționare",
+        "authority": "Primăria Cluj-Napoca",
+        "description": "Acord pentru activitate de servicii.",
+        "docs": ["Aviz DSP", "ONRC"],
+        "estimatedDays": 7,
+        "dependsOn": ["dsp"]
+      }
+    ]
+  }
+]
