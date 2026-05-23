@@ -210,12 +210,16 @@ function zoneBadgeVariant(zoneFit: SpaceAnalysis["zoneFit"]) {
   return zoneFit === "good" ? "default" : zoneFit === "conditional" ? "secondary" : "destructive";
 }
 
-export function RoadmapCaenPageClient() {
+interface RoadmapCaenPageClientProps {
+  initialCf?: string;
+}
+
+export function RoadmapCaenPageClient({ initialCf }: RoadmapCaenPageClientProps) {
   const [mode, setMode] = useState<Mode>("audit");
   const [caenQuery, setCaenQuery] = useState("");
   const [caenOptions, setCaenOptions] = useState<CaenOption[]>([]);
   const [roadmap, setRoadmap] = useState<CaenRoadmap | null>(null);
-  const [cfNumber, setCfNumber] = useState("");
+  const [cfNumber, setCfNumber] = useState(initialCf ?? "");
   const [analysis, setAnalysis] = useState<SpaceAnalysis | null>(null);
   const [recommendations, setRecommendations] = useState<SpaceAnalysis[]>([]);
   const [loading, setLoading] = useState(false);
@@ -225,6 +229,13 @@ export function RoadmapCaenPageClient() {
     () => caenOptions.find((option) => option.code === caenQuery.trim()),
     [caenOptions, caenQuery],
   );
+
+  useEffect(() => {
+    if (initialCf) {
+      setCfNumber(initialCf);
+      setMode("audit");
+    }
+  }, [initialCf]);
 
   useEffect(() => {
     let ignore = false;
