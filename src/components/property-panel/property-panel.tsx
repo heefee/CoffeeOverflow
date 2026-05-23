@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -160,6 +161,7 @@ function ComplianceChecklist({
 }
 
 export function PropertyPanel() {
+  const router = useRouter();
   const {
     selectedProperty,
     selectedFeature,
@@ -275,7 +277,10 @@ export function PropertyPanel() {
             </Card>
             <Button
               className="w-full cursor-pointer bg-accent text-accent-foreground hover:opacity-90"
-              onClick={() => setShowRoadmap(true)}
+              onClick={() => {
+                const cf = encodeURIComponent(p.cadastralRef);
+                router.push(`/roadmap-caen?cf=${cf}`);
+              }}
             >
               Planifică business-ul (CAEN)
             </Button>
