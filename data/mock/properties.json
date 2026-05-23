@@ -1,5 +1,5 @@
 {
-  "mock-loc:loc-03": {
+  "mock-loc:loc-17": {
     "cadastralRef": "283959",
     "address": "Str. Piezișă 14, Cluj-Napoca",
     "areaSqm": 482,
@@ -111,6 +111,15 @@
           "issuedAt": "2023-07-19",
           "expiresAt": "2024-07-19",
           "notes": "Reemitere necesară înainte de autorizație construire/funcționare. Nu ține loc de AC."
+        },
+        {
+          "id": "isu-planb-2023",
+          "type": "Autorizație securitate la incendiu — modernizare club și amenajare bucătărie",
+          "authority": "ISU Cluj",
+          "status": "active",
+          "number": "1208/22/SU-CJ",
+          "issuedAt": "2023-01-18",
+          "notes": "Date din registru ISU: S.C. PLAN B EVENTS MANAGEMENT S.R.L.; obiectiv modernizare club și amenajare bucătărie, Str. Republicii nr. 109, mun. Cluj-Napoca. Autorizația este tratată ca valabilă; verificările periodice rămân obligații operaționale."
         }
       ],
       "possible": [
@@ -127,13 +136,6 @@
           "authority": "DSP Cluj",
           "status": "possible",
           "notes": "Plan amplasament, fișă tehnică spațiu, contract spațiu, proceduri igienă băuturi/alimente."
-        },
-        {
-          "id": "isu-bar",
-          "type": "Aviz / Autorizație securitate la incendiu",
-          "authority": "ISU Cluj",
-          "status": "possible",
-          "notes": "Plan evacuare, memoriu tehnic, date suprafață și capacitate public."
         },
         {
           "id": "apm-bar",
@@ -199,7 +201,27 @@
           "notes": "Doar dacă se amenajează terasă pe domeniul public; declarație impunere taxă ocupare DP."
         }
       ]
-    }
+    },
+    "complianceTasks": [
+      {
+        "id": "planb-stingatoare-2026",
+        "title": "Verificare și reîncărcare stingătoare",
+        "authority": "Firmă autorizată PSI",
+        "frequency": "Anual",
+        "dueLabel": "De făcut în 2026",
+        "defaultCompleted": false,
+        "notes": "Stingătoarele trebuie verificate și, după caz, reîncărcate anual. Eticheta trebuie să indice luna și anul verificării."
+      },
+      {
+        "id": "planb-instalatii-speciale-2026",
+        "title": "Revizie instalații speciale ISU",
+        "authority": "Firmă autorizată mentenanță PSI",
+        "frequency": "Semestrial sau anual, după contract și tipul instalației",
+        "dueLabel": "De făcut/verificat în 2026",
+        "defaultCompleted": false,
+        "notes": "Senzorii de fum, pompele de hidranți și trapele de desfumare trebuie acoperite de contracte de mentenanță. Rapoartele de revizie pot fi cerute la control inopinat."
+      }
+    ]
   },
   "mock-loc:loc-belvedere": {
     "cadastralRef": "334763",

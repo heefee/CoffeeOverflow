@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +8,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAppStore } from "@/store/app-store";
-import type { CadastralImobilePart, CertificateStatus, PropertyRecord } from "@/types";
+import type {
+  CadastralImobilePart,
+  CertificateStatus,
+  ComplianceTask,
+  PropertyRecord,
+} from "@/types";
 import {
   Building2,
   ExternalLink,
@@ -75,6 +81,84 @@ function ImobileSection({ parts }: { parts: CadastralImobilePart[] }) {
   );
 }
 
+function ComplianceChecklist({
+  propertyRef,
+  tasks,
+}: {
+  propertyRef: string;
+  tasks: ComplianceTask[];
+}) {
+  const storageKey = `compliance:${propertyRef}`;
+  const [checked, setChecked] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    const defaults = Object.fromEntries(
+      tasks.map((task) => [task.id, Boolean(task.defaultCompleted)]),
+    );
+
+    try {
+      const stored = window.localStorage.getItem(storageKey);
+      setChecked(stored ? { ...defaults, ...JSON.parse(stored) } : defaults);
+    } catch {
+      setChecked(defaults);
+    }
+  }, [storageKey, tasks]);
+
+  function toggleTask(taskId: string) {
+    setChecked((current) => {
+      const next = { ...current, [taskId]: !current[taskId] };
+      try {
+        window.localStorage.setItem(storageKey, JSON.stringify(next));
+      } catch {
+        // Local persistence is optional; the checkbox still works for this session.
+      }
+      return next;
+    });
+  }
+
+  return (
+    <Card className="border-warning/30 bg-warning/5">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base">Verificări periodice ISU</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        {tasks.map((task) => {
+          const isDone = Boolean(checked[task.id]);
+          return (
+            <label
+              key={task.id}
+              className="flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-background/80 p-3 text-sm"
+            >
+              <input
+                type="checkbox"
+                checked={isDone}
+                onChange={() => toggleTask(task.id)}
+                className="mt-1 size-4 cursor-pointer accent-primary"
+              />
+              <span className="space-y-1">
+                <span className="flex flex-wrap items-center gap-2">
+                  <span className="font-medium text-foreground">{task.title}</span>
+                  <Badge variant={isDone ? "default" : "outline"} className="text-[10px]">
+                    {isDone ? "Făcut" : "Nefăcut"}
+                  </Badge>
+                  <Badge variant="secondary" className="text-[10px]">
+                    {task.dueLabel}
+                  </Badge>
+                </span>
+                <span className="block text-xs text-foreground/70">
+                  {task.frequency}
+                  {task.authority ? ` · ${task.authority}` : ""}
+                </span>
+                <span className="block text-xs text-foreground/70">{task.notes}</span>
+              </span>
+            </label>
+          );
+        })}
+      </CardContent>
+    </Card>
+  );
+}
+
 export function PropertyPanel() {
   const {
     selectedProperty,
@@ -116,6 +200,9 @@ export function PropertyPanel() {
   const p: PropertyRecord = selectedProperty;
   const cu = statusLabel(p.urbanism.certificateStatus);
   const areaFromAncpi = selectedFeature?.properties.SHAPE_Area;
+  const activeAuthorizationsCount = p.authorizations.existing.filter(
+    (authorization) => authorization.status === "active",
+  ).length;
 
   return (
     <ScrollArea className="h-full">
@@ -182,7 +269,7 @@ export function PropertyPanel() {
                 <DetailRow label="Certificat urbanism" value={cu.text} />
                 <DetailRow
                   label="Autorizații active"
-                  value={String(p.authorizations.existing.length)}
+                  value={String(activeAuthorizationsCount)}
                 />
               </CardContent>
             </Card>
@@ -379,7 +466,7 @@ export function PropertyPanel() {
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-base">
                   <Shield className="size-4 text-primary" />
-                  Autorizații și avize în vigoare
+                  Autorizații și avize existente
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
@@ -396,10 +483,20 @@ export function PropertyPanel() {
                       <div className="flex items-start justify-between gap-2">
                         <p className="font-medium">{a.type}</p>
                         <Badge
-                          variant={a.status === "expired" ? "destructive" : "default"}
+                          variant={
+                            a.status === "expired"
+                              ? "destructive"
+                              : a.status === "possible"
+                                ? "outline"
+                                : "default"
+                          }
                           className="shrink-0 text-[10px]"
                         >
-                          {a.status === "expired" ? "Expirat" : "Activ"}
+                          {a.status === "expired"
+                            ? "Expirat"
+                            : a.status === "possible"
+                              ? "Posibil"
+                              : "Activ"}
                         </Badge>
                       </div>
                       <p className="text-foreground/70">{a.authority}</p>
@@ -422,6 +519,9 @@ export function PropertyPanel() {
                 )}
               </CardContent>
             </Card>
+            {p.complianceTasks?.length ? (
+              <ComplianceChecklist propertyRef={p.cadastralRef} tasks={p.complianceTasks} />
+            ) : null}
             <Card className="border-border">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base">Autorizații posibile</CardTitle>

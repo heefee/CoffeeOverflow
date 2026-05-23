@@ -104,9 +104,8 @@
       },
       "properties": {
         "id": "loc-03",
-        "label": "Plan B",
+        "label": "Locația 3",
         "kind": "owned",
-        "isPlanB": true,
         "fill": "rgba(0, 255, 42, 1)"
       }
     },
@@ -657,9 +656,10 @@
       "type": "Feature",
       "properties": {
         "id": "loc-17",
-        "label": "Locația 17",
-        "kind": "competitor",
-        "fill": "rgba(255, 0, 0, 1)"
+        "label": "Plan B",
+        "kind": "owned",
+        "isPlanB": true,
+        "fill": "rgba(0, 255, 42, 1)"
       },
       "geometry": {
         "type": "Polygon",

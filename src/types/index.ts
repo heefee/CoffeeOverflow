@@ -11,6 +11,16 @@ export interface Authorization {
   notes?: string;
 }
 
+export interface ComplianceTask {
+  id: string;
+  title: string;
+  authority?: string;
+  frequency: string;
+  dueLabel: string;
+  defaultCompleted?: boolean;
+  notes: string;
+}
+
 export interface CadastreInfo {
   nationalCadastralRef: string;
   localCadastralNumber: string;
@@ -86,6 +96,7 @@ export interface PropertyRecord {
     existing: Authorization[];
     possible: Authorization[];
   };
+  complianceTasks?: ComplianceTask[];
 }
 
 export interface AncpiParcelAttributes {
