@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
 interface RoadmapStepDocsChecklistProps {
@@ -24,29 +25,57 @@ export function RoadmapStepDocsChecklist({
   compact,
 }: RoadmapStepDocsChecklistProps) {
   const storageKey = `roadmap-docs:${caen}:${storageScope}:${stepId}`;
-  const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const defaults = useMemo(
+    () => Object.fromEntries(docs.map((doc, index) => [docKey(doc, index), false])),
+    [docs],
+  );
+  const [checked, setChecked] = useState<Record<string, boolean>>(defaults);
+  const [canUseChecklist, setCanUseChecklist] = useState(false);
 
   useEffect(() => {
-    const defaults = Object.fromEntries(docs.map((doc, index) => [docKey(doc, index), false]));
-
-    try {
-      const stored = window.localStorage.getItem(storageKey);
-      setChecked(stored ? { ...defaults, ...JSON.parse(stored) } : defaults);
-    } catch {
-      setChecked(defaults);
+    let ignore = false;
+    async function loadAuthStatus() {
+      const response = await fetch("/api/auth/me", { cache: "no-store" });
+      if (!response.ok || ignore) return;
+      const data = (await response.json()) as { authenticated?: boolean };
+      setCanUseChecklist(Boolean(data.authenticated));
     }
-  }, [storageKey, docs]);
+
+    loadAuthStatus();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      if (!canUseChecklist) {
+        setChecked(defaults);
+        return;
+      }
+
+      try {
+        const stored = window.localStorage.getItem(storageKey);
+        setChecked(stored ? { ...defaults, ...JSON.parse(stored) } : defaults);
+      } catch {
+        setChecked(defaults);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [canUseChecklist, defaults, storageKey]);
 
   function toggleDoc(key: string) {
-    setChecked((current) => {
-      const next = { ...current, [key]: !current[key] };
-      try {
+    if (!canUseChecklist) return;
+    try {
+      setChecked((current) => {
+        const next = { ...current, [key]: !current[key] };
         window.localStorage.setItem(storageKey, JSON.stringify(next));
-      } catch {
-        // Persistența locală este opțională.
-      }
-      return next;
-    });
+        return next;
+      });
+    } catch {
+      setChecked((current) => ({ ...current, [key]: !current[key] }));
+    }
   }
 
   if (!docs.length) return null;
@@ -61,8 +90,17 @@ export function RoadmapStepDocsChecklist({
             Acte necesare
           </p>
           <Badge variant="outline" className="text-[10px]">
-            {doneCount}/{docs.length} bifate
+            {canUseChecklist ? `${doneCount}/${docs.length} bifate` : "ROeID necesar"}
           </Badge>
+        </div>
+      ) : null}
+      {!canUseChecklist ? (
+        <div className="rounded-lg bg-secondary/70 p-3 text-xs text-muted-foreground">
+          Checklist-ul se salvează doar pentru utilizatori autentificați.{" "}
+          <Link href="/login" className="font-medium text-accent hover:underline">
+            Conectează-te cu ROeID
+          </Link>{" "}
+          pentru a bifa și păstra progresul.
         </div>
       ) : null}
       <ul className="space-y-1.5">
@@ -72,15 +110,20 @@ export function RoadmapStepDocsChecklist({
           return (
             <li key={key}>
               <label
-                className={`flex cursor-pointer items-start gap-2.5 rounded-md border border-border bg-background/80 text-sm transition-colors hover:bg-secondary/50 ${
+                className={`flex items-start gap-2.5 rounded-md border border-border bg-background/80 text-sm transition-colors ${
+                  canUseChecklist
+                    ? "cursor-pointer hover:bg-secondary/50"
+                    : "cursor-not-allowed opacity-70"
+                } ${
                   compact ? "p-2" : "p-2.5"
                 }`}
               >
                 <input
                   type="checkbox"
                   checked={isDone}
+                  disabled={!canUseChecklist}
                   onChange={() => toggleDoc(key)}
-                  className="mt-0.5 size-4 shrink-0 cursor-pointer accent-primary"
+                  className="mt-0.5 size-4 shrink-0 cursor-pointer accent-primary disabled:cursor-not-allowed"
                 />
                 <span
                   className={

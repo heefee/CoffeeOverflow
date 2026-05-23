@@ -7,6 +7,7 @@ import {
   ROEID_STATE_COOKIE,
 } from "@/lib/auth/roeid";
 import { setAuthSession } from "@/lib/auth/session";
+import { upsertAuthUser } from "@/lib/auth/users";
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");
@@ -28,7 +29,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const tokens = await exchangeCodeForTokens(request, code);
-    const user = await buildUserFromTokens(tokens, expectedNonce);
+    const user = await upsertAuthUser(await buildUserFromTokens(tokens, expectedNonce));
     await setAuthSession(user);
     return NextResponse.redirect(new URL("/harta", request.nextUrl.origin));
   } catch (error) {
