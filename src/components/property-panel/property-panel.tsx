@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAppStore } from "@/store/app-store";
-import type { CertificateStatus, PropertyRecord } from "@/types";
+import type { CadastralImobilePart, CertificateStatus, PropertyRecord } from "@/types";
 import {
   Building2,
   ExternalLink,
@@ -34,6 +34,45 @@ function statusLabel(status: CertificateStatus) {
 
 function formatCoord(n: number) {
   return n.toFixed(5);
+}
+
+function ImobileSection({ parts }: { parts: CadastralImobilePart[] }) {
+  const land = parts.find((p) => p.role === "teren");
+  const building = parts.find((p) => p.role === "constructie");
+
+  return (
+    <Card className="border-primary/20 bg-secondary/40">
+      <CardContent className="space-y-3 pt-4">
+        <p className="text-xs font-medium uppercase tracking-wide text-primary">
+          Imobile în carte funciară
+        </p>
+        {land ? (
+          <div className="rounded-lg border border-border bg-background/80 p-3 text-sm">
+            <p className="font-medium text-foreground">Teren</p>
+            <DetailRow label="Nr. cadastral" value={land.cadastralNumber} />
+            <DetailRow label="Carte funciară" value={land.carteFunciara} />
+            {land.areaSqm ? (
+              <DetailRow label="Suprafață" value={`${land.areaSqm} m²`} />
+            ) : null}
+            <DetailRow label="Folosință" value={land.usage} />
+          </div>
+        ) : null}
+        {building ? (
+          <div className="rounded-lg border border-border bg-background/80 p-3 text-sm">
+            <p className="font-medium text-foreground">
+              Construcție{building.buildingLabel ? ` (${building.buildingLabel})` : ""}
+            </p>
+            <DetailRow label="Nr. cadastral" value={building.cadastralNumber} />
+            <DetailRow label="Carte funciară" value={building.carteFunciara} />
+            {building.areaSqm ? (
+              <DetailRow label="Suprafață construită" value={`${building.areaSqm} m²`} />
+            ) : null}
+            <DetailRow label="Folosință" value={building.usage} />
+          </div>
+        ) : null}
+      </CardContent>
+    </Card>
+  );
 }
 
 export function PropertyPanel() {
@@ -89,8 +128,12 @@ export function PropertyPanel() {
             Referință cadastrală
           </p>
           <h2 className="font-heading text-lg font-semibold text-foreground">
-            {p.cadastralRef}
+            {selectedFeature?.properties.id_localId ?? p.cadastralRef}
           </h2>
+          {selectedFeature?.properties.id_localId &&
+          selectedFeature.properties.id_localId !== p.cadastralRef ? (
+            <p className="text-xs text-foreground/60">Ref. cadastrală {p.cadastralRef}</p>
+          ) : null}
           <p className="mt-1 flex items-start gap-1.5 text-sm text-foreground/80">
             <MapPin className="mt-0.5 size-4 shrink-0" aria-hidden />
             {p.address}
@@ -120,12 +163,22 @@ export function PropertyPanel() {
             <Card className="border-border shadow-sm">
               <CardContent className="space-y-2 pt-4">
                 <DetailRow
-                  label="Suprafață"
+                  label="Suprafață teren"
                   value={`${Math.round(p.areaSqm)} m²${areaFromAncpi ? ` (ANCPI: ${Math.round(areaFromAncpi)} m²)` : ""}`}
                 />
+                {p.immobile?.find((i) => i.role === "constructie") ? (
+                  <DetailRow
+                    label="Construcție"
+                    value={`${p.immobile.find((i) => i.role === "constructie")!.cadastralNumber}${
+                      p.immobile.find((i) => i.role === "constructie")!.areaSqm
+                        ? ` · ${p.immobile.find((i) => i.role === "constructie")!.areaSqm} m²`
+                        : ""
+                    }`}
+                  />
+                ) : null}
                 <DetailRow label="Zonare PUG" value={p.pugZone} />
-                <DetailRow label="Nr. cadastral local" value={p.cadastre.localCadastralNumber} />
-                <DetailRow label="Carte funciară" value={p.landBook.number} />
+                <DetailRow label="Nr. cadastral" value={p.cadastre.localCadastralNumber} />
+                <DetailRow label="Carte funciară (teren)" value={p.landBook.number} />
                 <DetailRow label="Certificat urbanism" value={cu.text} />
                 <DetailRow
                   label="Autorizații active"
@@ -142,6 +195,7 @@ export function PropertyPanel() {
           </TabsContent>
 
           <TabsContent value="cadastru" className="mt-3 space-y-3">
+            {p.immobile?.length ? <ImobileSection parts={p.immobile} /> : null}
             <Card className="border-border">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-base">
@@ -171,6 +225,7 @@ export function PropertyPanel() {
           </TabsContent>
 
           <TabsContent value="cf" className="mt-3 space-y-3">
+            {p.immobile?.length ? <ImobileSection parts={p.immobile} /> : null}
             <Card className="border-border">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-base">
@@ -179,7 +234,13 @@ export function PropertyPanel() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <DetailRow label="Număr CF" value={p.landBook.number} />
+                <DetailRow label="CF teren" value={p.landBook.number} />
+                {p.immobile?.find((i) => i.role === "constructie") ? (
+                  <DetailRow
+                    label="Imobil construcție"
+                    value={p.immobile.find((i) => i.role === "constructie")!.cadastralNumber}
+                  />
+                ) : null}
                 <DetailRow label="Tom" value={p.landBook.volume} />
                 <DetailRow label="Foaie" value={p.landBook.sheet} />
                 <DetailRow label="Proprietar" value={p.landBook.ownersMasked} />
@@ -233,7 +294,62 @@ export function PropertyPanel() {
                 {p.urbanism.purpose ? (
                   <DetailRow label="Scop" value={p.urbanism.purpose} />
                 ) : null}
+                {p.urbanism.topographicNumber ? (
+                  <DetailRow label="Nr. topografic" value={p.urbanism.topographicNumber} />
+                ) : null}
+                {p.urbanism.cadastralNumbers?.length ? (
+                  <DetailRow
+                    label="Nr. cadastral"
+                    value={p.urbanism.cadastralNumbers.join(", ")}
+                  />
+                ) : null}
                 <DetailRow label="Zonă PUG" value={p.urbanism.pugZone} />
+                {p.urbanism.pug ? (
+                  <Card className="mt-2 border-primary/20 bg-secondary/50">
+                    <CardContent className="space-y-2 pt-4">
+                      <DetailRow label="Cod UTR PUG" value={p.urbanism.pug.code} />
+                      <DetailRow label="Denumire zonă" value={p.urbanism.pug.label} />
+                      {p.urbanism.pug.subzones?.length ? (
+                        <DetailRow
+                          label="Subzone"
+                          value={p.urbanism.pug.subzones.join(" · ")}
+                        />
+                      ) : null}
+                      {p.urbanism.pug.character ? (
+                        <p className="text-sm text-foreground/80">{p.urbanism.pug.character}</p>
+                      ) : null}
+                      {p.urbanism.pug.potMax ? (
+                        <DetailRow label="P.O.T. maxim" value={p.urbanism.pug.potMax} />
+                      ) : null}
+                      {p.urbanism.pug.cutMax ? (
+                        <DetailRow label="C.U.T. maxim" value={p.urbanism.pug.cutMax} />
+                      ) : null}
+                      {p.urbanism.pug.heightRegime ? (
+                        <DetailRow
+                          label="Regim înălțime"
+                          value={p.urbanism.pug.heightRegime}
+                        />
+                      ) : null}
+                      <p className="text-sm font-medium">Reguli esențiale (PUG)</p>
+                      <ul className="list-inside list-disc text-sm text-foreground/90">
+                        {p.urbanism.pug.keyRules.map((rule) => (
+                          <li key={rule}>{rule}</li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                ) : null}
+                {p.urbanism.sourceUrl ? (
+                  <a
+                    href={p.urbanism.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex cursor-pointer items-center gap-1 text-sm text-accent hover:underline"
+                  >
+                    Certificat publicat — Primăria Cluj-Napoca
+                    <ExternalLink className="size-3" />
+                  </a>
+                ) : null}
                 <p className="text-sm font-medium">Restricții urbanistice</p>
                 <ul className="list-inside list-disc text-sm">
                   {p.urbanism.restrictions.map((r) => (

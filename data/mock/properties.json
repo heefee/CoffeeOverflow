@@ -1,4 +1,431 @@
 {
+  "mock-loc:loc-03": {
+    "cadastralRef": "283959",
+    "address": "Str. Piezișă 14, Cluj-Napoca",
+    "areaSqm": 482,
+    "pugZone": "UTR ZCP_M2 — Zonă construită protejată, mixtă, adiacentă arterelor de importanță locală",
+    "immobile": [
+      {
+        "role": "teren",
+        "cadastralNumber": "283959",
+        "carteFunciara": "283959",
+        "areaSqm": 482,
+        "usage": "Teren — curți construcții (conform CU 1657/2023)"
+      },
+      {
+        "role": "constructie",
+        "cadastralNumber": "283959-C1",
+        "carteFunciara": "283959",
+        "areaSqm": 99,
+        "usage": "Locuință — 3 camere, bucătărie, cămară alimente, debara, pivniță",
+        "buildingLabel": "Corp C1"
+      }
+    ],
+    "cadastre": {
+      "nationalCadastralRef": "283959",
+      "localCadastralNumber": "283959 (teren) · 283959-C1 (construcție)",
+      "uat": "Municipiul Cluj-Napoca, jud. Cluj",
+      "sector": "Nr. topografic 12207",
+      "landCategory": "Intravilan — curți construcții",
+      "usageCategory": "Teren + construcție corp C1 (nr. cadastral 283959-C1)",
+      "intravilan": true,
+      "registeredAt": "2023-07-19",
+      "dataSource": "Date cadastrale din CU 1657/2023 (Primăria Cluj-Napoca); proprietar demo"
+    },
+    "landBook": {
+      "number": "283959",
+      "volume": "8921 (CF vechi, menționat în CU)",
+      "sheet": "12207",
+      "ownersMasked": "Proprietate privată — date titular mascate (demo; nepublicate în CU)",
+      "propertyRight": "Proprietate privată — teren și construcție corp C1 (CU pct. 1 regim juridic)",
+      "encumbrances": [
+        "Servituți utilitate publică: nu este cazul (CU)",
+        "Alte restricții: nu este cazul (CU)",
+        "Ansamblu urban „Centrul istoric al orașului Cluj” — LMI CJ-II-a-A-07244 (CU)"
+      ],
+      "annotations": [
+        "Cerere urbanism nr. 602221 din 20.06.2023",
+        "Nr. cadastral înscris: 283959, 283959-C1",
+        "Zonă impozitare „A” — HCL 1064/19.12.2018 (CU)",
+        "Notă CU: există și corp C2 (terasă acoperită parter) fără acte — neînscris ca imobil separat în modelul nostru",
+        "Destinație zonă: preponderent ZCP_M2, parțial Lcs (cămine studențești)"
+      ],
+      "lastUpdate": "2023-07-19"
+    },
+    "urbanism": {
+      "certificateStatus": "expired",
+      "certificateNumber": "1657/2023",
+      "issuedAt": "2023-07-19",
+      "validUntil": "2024-07-19",
+      "purpose": "Informare — regim juridic, economic și tehnic (certificat de urbanism; vezi pct. 4 obligații mediu)",
+      "pugZone": "UTR ZCP_M2 (+ parțial Lcs cămine studențești)",
+      "pug": {
+        "code": "ZCP_M2",
+        "label": "Zonă construită protejată — mixtă, regim de construire închis, adiacentă arterelor de importanță locală",
+        "subzones": ["S_Et — activități economice terțiare în zone rezidențiale", "S_L — locuințe regim redus (interdicție definitivă construire)"],
+        "character": "Zonă construită protejată din Centrul istoric; front continuu (închis); parcelar protejat — comasare/divizare doar cu aviz CRMCI.",
+        "potMax": "60% (parcelă comună) · 70% (parcelă de colț)",
+        "cutMax": "1,8 (parcelă comună) · 2,2 (parcelă de colț)",
+        "heightRegime": "(S/D)+P+2+M sau (S/D)+P+2+1R; cornișă ~12 m (clădiri de colț max. 16 m)",
+        "keyRules": [
+          "Aliniament închis — conservare aliniament existent",
+          "Adâncime maximă 18 m de la aliniament (tipologii L/U/C/T/O până la 40 m cu calcane vecine)",
+          "Spații verzi min. 20% (POT max 50%) sau 15% (POT max 70%)",
+          "Staționare min. 75% la subsol/demisol/parter în clădiri noi",
+          "Alimentație publică admisă condiționat în S_Et: max. 500 mp ADC, prin PUZ regenerare urbană în zona Lcs",
+          "Interzise: comerț prin vitrine, garaje individuale provizorii, instalații pe fațada spre spațiul public"
+        ]
+      },
+      "topographicNumber": "12207",
+      "cadastralNumbers": ["283959", "283959-C1"],
+      "sourceUrl": "https://primariaclujnapoca.ro/urbanism/certificate-de-urbanism/certificat-de-urbanism-1657-din-2023/",
+      "restrictions": [
+        "Perimetru protecție valori istorice și arhitectural-urbanistice",
+        "P.O.T. maxim 60% (parcelă comună); C.U.T. maxim 1,8",
+        "Regim înălțime (S/D)+P+2+M sau (S/D)+P+2+1R; cornișă ~12 m",
+        "Obligație contactare APM Cluj pentru evaluare impact mediu (pct. 4 CU)",
+        "În zona Lcs: construcții noi / conversii funcționale doar prin PUZ regenerare urbană",
+        "Alimentație publică admisă în clădiri dedicate noi max. 500 mp ADC, prin PUZ regenerare",
+        "Interzis comerț practicat prin vitrine/ferestre; interzise garaje individuale provizorii"
+      ],
+      "existingBuildings": [
+        "283959-C1 (corp C1) — locuință, S construită 99 mp",
+        "283959 (teren) — S teren 482 mp",
+        "Terasă acoperită parter menționată în CU, fără acte — nemodelată ca -C2"
+      ],
+      "allowedDestinations": [
+        "Locuințe (existent)",
+        "Alimentație publică (condiționat, S_Et)",
+        "Comerț alimentar/nealimentar (condiționat)",
+        "Servicii cu acces public (condiționat)"
+      ]
+    },
+    "authorizations": {
+      "existing": [
+        {
+          "id": "cu-planb",
+          "type": "Certificat de urbanism",
+          "authority": "Primăria Cluj-Napoca — Serviciul Urbanism",
+          "status": "expired",
+          "number": "1657/2023",
+          "issuedAt": "2023-07-19",
+          "expiresAt": "2024-07-19",
+          "notes": "Reemitere necesară înainte de autorizație construire/funcționare. Nu ține loc de AC."
+        }
+      ],
+      "possible": [
+        {
+          "id": "af-bar",
+          "type": "Autorizație de funcționare — alimentație publică (CAEN 5630 Bar)",
+          "authority": "Primăria Municipiului Cluj-Napoca",
+          "status": "possible",
+          "notes": "După avize DSP, ISU, acord mediu și CU valabil. Taxă alimentație publică conform HCL local."
+        },
+        {
+          "id": "dsp-bar",
+          "type": "Aviz / Autorizație sanitară de funcționare",
+          "authority": "DSP Cluj",
+          "status": "possible",
+          "notes": "Plan amplasament, fișă tehnică spațiu, contract spațiu, proceduri igienă băuturi/alimente."
+        },
+        {
+          "id": "isu-bar",
+          "type": "Aviz / Autorizație securitate la incendiu",
+          "authority": "ISU Cluj",
+          "status": "possible",
+          "notes": "Plan evacuare, memoriu tehnic, date suprafață și capacitate public."
+        },
+        {
+          "id": "apm-bar",
+          "type": "Acord de mediu / decizie etapă încadrare",
+          "authority": "APM Cluj-Napoca",
+          "status": "possible",
+          "notes": "Obligatoriu conform certificatului de urbanism — evaluare inițială investiție."
+        },
+        {
+          "id": "alcool",
+          "type": "Licență pentru comercializare băuturi alcoolice",
+          "authority": "Primăria Cluj-Napoca / autoritate competentă (Legea 24/1996)",
+          "status": "possible",
+          "notes": "Cerere, dovada spațiu, avize sanitare și ISU, taxă licență."
+        },
+        {
+          "id": "pol-locala",
+          "type": "Aviz / autorizație Poliție Locală pentru spațiu comercial",
+          "authority": "Poliția Locală Cluj-Napoca",
+          "status": "possible",
+          "notes": "Aviz funcționare spațiu comercial (echivalent procedurilor eDirect pentru autorizație locală)."
+        },
+        {
+          "id": "salub",
+          "type": "Contract salubrizare + ultima chitanță",
+          "authority": "Operator salubrizare autorizat PM Cluj-Napoca",
+          "status": "possible",
+          "notes": "Obligatoriu la dosar autorizare comercială."
+        },
+        {
+          "id": "onrc",
+          "type": "Certificat ONRC — obiect activitate CAEN 5630",
+          "authority": "ONRC",
+          "status": "possible",
+          "notes": "Dovadă înregistrare și cod CAEN la sediu/punct de lucru Piezișă 14."
+        },
+        {
+          "id": "extras-cf",
+          "type": "Extras de carte funciară pentru informare (max. 30 zile)",
+          "authority": "ANCPI / OCPI Cluj",
+          "status": "possible",
+          "notes": "Copie legalizată la dosar CU/AC/autorizație funcționare."
+        },
+        {
+          "id": "clasificare",
+          "type": "Declarație clasificare unitate alimentație publică",
+          "authority": "Primăria Cluj-Napoca",
+          "status": "possible",
+          "notes": "Conform HG 843/1999 — categorie bar/restaurant."
+        },
+        {
+          "id": "muzica",
+          "type": "Autorizație zgomot / evenimente muzicale (dacă e cazul)",
+          "authority": "Primăria Cluj-Napoca + Poliția Locală",
+          "status": "possible",
+          "notes": "Pentru program muzical live/DJ peste praguri legale; studiu zgomot dacă se solicită."
+        },
+        {
+          "id": "terasa",
+          "type": "Aviz urbanism ocupare domeniu public (terasă sezonieră)",
+          "authority": "Primăria Cluj-Napoca",
+          "status": "possible",
+          "notes": "Doar dacă se amenajează terasă pe domeniul public; declarație impunere taxă ocupare DP."
+        }
+      ]
+    }
+  },
+  "mock-loc:loc-belvedere": {
+    "cadastralRef": "334763",
+    "address": "Str. Călărașilor 1, Cluj-Napoca",
+    "areaSqm": 34860,
+    "pugZone": "UTR ZCP_Et / SZCP_Et (corp C1) + parțial ZCP_Va (teren Cetățuia)",
+    "immobile": [
+      {
+        "role": "teren",
+        "cadastralNumber": "334763",
+        "carteFunciara": "334763",
+        "areaSqm": 34860,
+        "usage": "Teren — curți-construcții / spații verzi Cetățuia (S=34.860 mp, CU 2436/2021)"
+      },
+      {
+        "role": "constructie",
+        "cadastralNumber": "334763-C1",
+        "carteFunciara": "334763",
+        "usage": "Hotel, restaurant, piscină acoperită — subsol I–II, mezanin + 7 etaje, 154 camere, 961 locuri alimentație publică",
+        "buildingLabel": "Corp C1"
+      }
+    ],
+    "cadastre": {
+      "nationalCadastralRef": "334763",
+      "localCadastralNumber": "334763 (teren) · 334763-C1 (construcție)",
+      "uat": "Municipiul Cluj-Napoca, jud. Cluj",
+      "sector": "Ansamblu Cetățuia — LMI CJ-II-a-A-07240",
+      "landCategory": "Intravilan — curți construcții; parcelă mare Cetățuia",
+      "usageCategory": "Teren + construcție 334763-C1 (hotel corp C1, SZCP_Et)",
+      "intravilan": true,
+      "registeredAt": "2021-08-04",
+      "dataSource": "Date cadastrale din CU 2436/2021 (Primăria Cluj-Napoca); operator/clasificare din surse publice"
+    },
+    "landBook": {
+      "number": "334763",
+      "volume": "— (nemenționat în CU)",
+      "sheet": "—",
+      "ownersMasked": "Proprietate privată — date titular mascate (demo; nepublicate în CU)",
+      "propertyRight": "Proprietate privată (CU pct. 1 regim juridic)",
+      "encumbrances": [
+        "Servitute trecere pietonală și auto nedeterminată — CF 321183 / 321183-C1, traseu L–K, suprafață 34.860 mp (CU)",
+        "Zonă risc geomorfologic mediu/mare — studii geotehnice obligatorii (CU)",
+        "Zonă arheologică protejată (CU)",
+        "Ansamblu Cetățuia — LMI CJ-II-a-A-07240 (CU)"
+      ],
+      "annotations": [
+        "Cerere urbanism nr. 353328 din 10.06.2021",
+        "Nr. cadastral înscris: 334763, 334763-C1",
+        "PUG aprobat HCL 493/22.12.2014 (menționat în CU)",
+        "Construcție 334763-C1: centrală termică proprie, parcaje auto — conf. CF 334763 (CU)",
+        "Certificat clasificare 3* nr. 1320/443 din 03.02.2012 (sursă publică operator turism — demo)"
+      ],
+      "lastUpdate": "2021-08-04"
+    },
+    "urbanism": {
+      "certificateStatus": "expired",
+      "certificateNumber": "2436/2021",
+      "issuedAt": "2021-08-04",
+      "validUntil": "2023-08-04",
+      "purpose": "Elaborare DALI și documentație tehnică pentru autorizarea lucrărilor de reabilitare și dotare centru operațional secundar (CU — pct. titlu)",
+      "pugZone": "ZCP_Et / SZCP_Et (hotel) + ZCP_Va (teren Cetățuia)",
+      "pug": {
+        "code": "ZCP_Et",
+        "label": "Zonă construită protejată — activități economice terțiare (clădiri/ansambluri dedicate)",
+        "subzones": [
+          "SZCP_Et — subzonă terțiar în zone cu alt caracter",
+          "ZCP_Va — spații verzi/scuaruri (parțial pe CF)"
+        ],
+        "character": "Organizare urbanistică deschisă, retrageri față de aliniament; clădiri semnificative în peisajul urban; intervenții majore prin PUD/PUZCP cu aviz CTATU și CRMCI.",
+        "potMax": "40% (parcelă comună) · 50% (colț) · 60% (cu parcaje colective) — corp C1 în SZCP_Et",
+        "cutMax": "2,2 (parcelă comună) · 2,8 (colț) · 3,0 (cu parcaje)",
+        "heightRegime": "Max. 16 m la cornișă, P+3+M(R); subsol I–II admis conform CU pentru intervenții corp C1",
+        "keyRules": [
+          "Restructurare funcțională / transformare doar prin PUD sau PUZCP (Metodologie zone protejate)",
+          "Aviz obligatoriu Comisia Regională a Monumentelor Istorice",
+          "Clădiri clasificate cat. 1 / 1A / 2 / 3 — regim diferențiat de intervenție",
+          "Staționare de regulă în garaje subterane; parcare vizitatori în zona retragerii (min. 3 m de limite)",
+          "Spații verzi min. 20% pe parcelă; grădina de fațadă min. 30% verde",
+          "ZCP_Va pe teren: POT max 5%, CUT max 0,1 — interzisă schimbarea destinației spațiilor verzi"
+        ]
+      },
+      "topographicNumber": "—",
+      "cadastralNumbers": ["334763", "334763-C1"],
+      "sourceUrl": "https://primariaclujnapoca.ro/urbanism/certificate-de-urbanism/certificat-de-urbanism-2436-din-2021/",
+      "restrictions": [
+        "Perimetru protecție valori istorice — Ansamblu Cetățuia",
+        "Zonă arheologică protejată — proceduri specifice",
+        "Risc alunecări teren — studii geotehnice și stabilitate",
+        "Intervenții corp C1 strict la subsol, în UTR ZCP_Et (conform documentației CU)",
+        "Publicitate comercială pe spațiul public interzisă (ZCP_Et); temporară doar pentru evenimente majore",
+        "Pe ZCP_Va: parcare auto interzisă pe teritoriul verde"
+      ],
+      "existingBuildings": [
+        "334763-C1 (corp C1) — hotel, restaurant, piscină: subsol I–II, mezanin + 7 etaje, 154 camere",
+        "334763 (teren) — S=34.860 mp; parțial ZCP_Va (verde) + corp C1 în SZCP_Et",
+        "Intervenții aprobate în CU: strict subsol corp C1, UTR ZCP_Et"
+      ],
+      "allowedDestinations": [
+        "Cazare hotelieră (existent)",
+        "Alimentație publică / restaurant (existent)",
+        "Activități terțiare compatibile SZCP_Et",
+        "Spații verzi și circulații pietonale (ZCP_Va)"
+      ]
+    },
+    "authorizations": {
+      "existing": [
+        {
+          "id": "cu-belvedere",
+          "type": "Certificat de urbanism",
+          "authority": "Primăria Cluj-Napoca — Serviciul Urbanism",
+          "status": "expired",
+          "number": "2436/2021",
+          "issuedAt": "2021-08-04",
+          "expiresAt": "2023-08-04",
+          "notes": "Scop: DALI + DT reabilitare centru operațional secundar. Reemitere necesară pentru lucrări noi."
+        },
+        {
+          "id": "clasificare-belvedere",
+          "type": "Certificat de clasificare — hotel 3 stele",
+          "authority": "Ministerul Economiei / ANT (turism)",
+          "status": "active",
+          "number": "1320/443",
+          "issuedAt": "2012-02-03",
+          "notes": "Date reale publicate de operator: certificat clasificare hotel 3 stele."
+        },
+        {
+          "id": "af-belvedere",
+          "type": "Autorizație de funcționare — structură primire turistică",
+          "authority": "Primăria Cluj-Napoca",
+          "status": "active",
+          "number": "—",
+          "issuedAt": "2012-06-01",
+          "expiresAt": "2026-12-31",
+          "notes": "Autorizație locală turism/HoReCa — date număr și valabilitate demo (nepublicate în CU)."
+        },
+        {
+          "id": "dsp-belvedere",
+          "type": "Autorizație sanitară de funcționare — alimentație publică",
+          "authority": "DSP Cluj",
+          "status": "active",
+          "number": "—",
+          "notes": "Capacitate 961 locuri la alimentație publică — conform CU 2436/2021; nr./date act demo."
+        },
+        {
+          "id": "isu-belvedere",
+          "type": "Autorizație securitate la incendiu — spațiu cu public",
+          "authority": "ISU Cluj",
+          "status": "active",
+          "number": "—",
+          "notes": "Hotel P+7, subsoluri, piscină — necesar legal; nr./date act demo (nepublicate în CU)."
+        },
+        {
+          "id": "apm-belvedere",
+          "type": "Acord de mediu / decizie încadrare",
+          "authority": "APM Cluj-Napoca",
+          "status": "possible",
+          "notes": "Verificare la APM pentru investiții cu impact — procedură tipică pentru capacitate mare (demo dacă lipsește actul)."
+        }
+      ],
+      "possible": [
+        {
+          "id": "cu-reemit",
+          "type": "Certificat de urbanism (reemitere)",
+          "authority": "Primăria Cluj-Napoca",
+          "status": "possible",
+          "notes": "Certificatul 2436/2021 a expirat la 04.08.2023."
+        },
+        {
+          "id": "ac-reabilitare",
+          "type": "Autorizație de construire/desființare — reabilitare subsol",
+          "authority": "Primăria Cluj-Napoca",
+          "status": "possible",
+          "notes": "După CU valabil, DALI, DTAC/DTAD, avize CRMCI, utilități, ISU, mediu."
+        },
+        {
+          "id": "crmci",
+          "type": "Aviz Comisia Regională Monumente Istorice",
+          "authority": "CRMCI Cluj",
+          "status": "possible",
+          "notes": "Obligatoriu pentru intervenții în zona construită protejată / Cetățuia."
+        },
+        {
+          "id": "arheologie",
+          "type": "Aviz arheologie (dacă se sapă subsolul)",
+          "authority": "Ministerul Culturii / Zonă arheologică",
+          "status": "possible",
+          "notes": "Zonă arheologică protejată menționată în CU."
+        },
+        {
+          "id": "geotehnic",
+          "type": "Studiu geotehnic + stabilitate generală",
+          "authority": "Specialist atestat",
+          "status": "possible",
+          "notes": "Zonă risc geomorfologic mediu/mare — obligatoriu conform CU."
+        },
+        {
+          "id": "clasificare-prelungire",
+          "type": "Preschimbare / reevaluare certificat clasificare 3*",
+          "authority": "Instituția publică centrală turism",
+          "status": "possible",
+          "notes": "La modificări de capacitate sau dotări — Ordin ANAT 65/2013 · procedură eDirect Id 25063."
+        },
+        {
+          "id": "manager-turism",
+          "type": "Brevet manager în turism",
+          "authority": "Autoritate turism",
+          "status": "possible",
+          "notes": "Manager certificat nr. 9255/2004 (sursă publică — demo, verificare periodică)."
+        },
+        {
+          "id": "piscina-dsp",
+          "type": "Aviz sanitar piscină acoperită",
+          "authority": "DSP Cluj",
+          "status": "possible",
+          "notes": "Control periodic calitate apă și igienă SPA/piscină."
+        },
+        {
+          "id": "salub-belvedere",
+          "type": "Contract salubrizare + management deșeuri",
+          "authority": "Operator autorizat",
+          "status": "possible",
+          "notes": "Hotel mare — contract obligatoriu, fluxuri separate reciclabil."
+        }
+      ]
+    }
+  },
   "424500-CF-001234": {
     "cadastralRef": "424500-CF-001234",
     "address": "Str. Memorandumului 28, Cluj-Napoca",

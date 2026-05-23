@@ -88,7 +88,7 @@ export function CaenSelector({ compact }: CaenSelectorProps) {
       </ul>
       {!compact && (
         <div className="flex flex-wrap gap-2">
-          {["5630", "5610", "4711"].map((code) => (
+          {["5630", "5510", "5610", "4711"].map((code) => (
             <Button
               key={code}
               variant="outline"
