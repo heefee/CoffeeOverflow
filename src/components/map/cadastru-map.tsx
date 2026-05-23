@@ -5,12 +5,21 @@ import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { CLUJ_BBOX, CLUJ_CENTER } from "@/lib/constants";
 import { getCadastralRef } from "@/lib/ancpi";
+import {
+  findMockLocationAt,
+  getMockLocations,
+  polygonCentroid,
+  type MockLocationFeature,
+} from "@/lib/mock-locations";
 import { useAppStore } from "@/store/app-store";
 import type { AncpiFeature } from "@/types";
 import { MapDisclaimer } from "./map-disclaimer";
 
 const PARCELS_SOURCE = "ancpi-parcels";
 const PARCELS_LAYER = "ancpi-parcels-fill";
+const MOCK_LOCATIONS_SOURCE = "mock-locations";
+const MOCK_LOCATIONS_FILL = "mock-locations-fill";
+const MOCK_LOCATIONS_LINE = "mock-locations-line";
 const SELECTED_SOURCE = "selected-parcel";
 const SELECTED_LAYER = "selected-parcel-fill";
 const CLICK_MARKER_SOURCE = "click-marker";
@@ -27,6 +36,101 @@ function queryParcelHits(
   if (!hasParcelLayer(map)) return [];
   const point = map.project([lng, lat]);
   return map.queryRenderedFeatures(point, { layers: [PARCELS_LAYER] });
+}
+
+function hasMockLocationLayer(map: maplibregl.Map): boolean {
+  return Boolean(map.getLayer(MOCK_LOCATIONS_FILL));
+}
+
+function queryMockLocationHits(
+  map: maplibregl.Map,
+  lng: number,
+  lat: number,
+): maplibregl.MapGeoJSONFeature[] {
+  if (!hasMockLocationLayer(map)) return [];
+  const point = map.project([lng, lat]);
+  return map.queryRenderedFeatures(point, { layers: [MOCK_LOCATIONS_FILL] });
+}
+
+function mockFeatureToAncpi(feature: MockLocationFeature): AncpiFeature {
+  return {
+    type: "Feature",
+    geometry: feature.geometry,
+    properties: {
+      nationalCadastralRef: feature.properties.id,
+      id_localId: feature.properties.label,
+    },
+  };
+}
+
+function loadMockLocations(map: maplibregl.Map) {
+  const data = getMockLocations();
+  const source = map.getSource(MOCK_LOCATIONS_SOURCE) as maplibregl.GeoJSONSource;
+  if (source) {
+    source.setData(data);
+    return;
+  }
+
+  map.addSource(MOCK_LOCATIONS_SOURCE, { type: "geojson", data });
+  map.addLayer({
+    id: MOCK_LOCATIONS_FILL,
+    type: "fill",
+    source: MOCK_LOCATIONS_SOURCE,
+    paint: {
+      "fill-color": [
+        "match",
+        ["get", "kind"],
+        "owned",
+        "#22c55e",
+        "competitor",
+        "#ef4444",
+        "#94a3b8",
+      ],
+      "fill-opacity": [
+        "case",
+        ["any", ["==", ["get", "isPlanB"], true], ["==", ["get", "isBelvedere"], true]],
+        0.5,
+        0.32,
+      ],
+    },
+  });
+  map.addLayer({
+    id: MOCK_LOCATIONS_LINE,
+    type: "line",
+    source: MOCK_LOCATIONS_SOURCE,
+    paint: {
+      "line-color": [
+        "match",
+        ["get", "kind"],
+        "owned",
+        "#15803d",
+        "competitor",
+        "#b91c1c",
+        "#64748b",
+      ],
+      "line-width": [
+        "case",
+        ["any", ["==", ["get", "isPlanB"], true], ["==", ["get", "isBelvedere"], true]],
+        3,
+        2,
+      ],
+    },
+  });
+
+  map.on("mouseenter", MOCK_LOCATIONS_FILL, () => {
+    map.getCanvas().style.cursor = "pointer";
+  });
+  map.on("mouseleave", MOCK_LOCATIONS_FILL, () => {
+    map.getCanvas().style.cursor = "crosshair";
+  });
+  ensureMockLocationsOnTop(map);
+}
+
+function ensureMockLocationsOnTop(map: maplibregl.Map) {
+  if (!hasMockLocationLayer(map)) return;
+  if (!hasParcelLayer(map)) return;
+  map.moveLayer(MOCK_LOCATIONS_FILL);
+  map.moveLayer(MOCK_LOCATIONS_LINE);
 }
 
 function bindParcelHoverHandlers(map: maplibregl.Map) {
@@ -132,6 +236,7 @@ export function CadastruMap() {
           bindParcelHoverHandlers(map);
           parcelHoverBoundRef.current = true;
         }
+        ensureMockLocationsOnTop(map);
       }
     } catch {
       /* overlay optional */
@@ -220,8 +325,34 @@ export function CadastruMap() {
         let feature: AncpiFeature | null = null;
         let cadastralRef: string | undefined;
         let areaSqm: number | undefined;
+        let resolveLng = lng;
+        let resolveLat = lat;
 
-        if (map) {
+        const mockAtPoint = findMockLocationAt(lng, lat);
+        if (mockAtPoint) {
+          feature = mockFeatureToAncpi(mockAtPoint);
+          const center = polygonCentroid(mockAtPoint);
+          resolveLng = center.lng;
+          resolveLat = center.lat;
+        } else if (map) {
+          const mockHits = queryMockLocationHits(map, lng, lat);
+          if (mockHits.length > 0 && mockHits[0].geometry) {
+            const geom = mockHits[0].geometry;
+            if (geom.type === "Polygon") {
+              const mockFeature = {
+                type: "Feature" as const,
+                geometry: geom,
+                properties: mockHits[0].properties as MockLocationFeature["properties"],
+              };
+              feature = mockFeatureToAncpi(mockFeature);
+              const center = polygonCentroid(mockFeature);
+              resolveLng = center.lng;
+              resolveLat = center.lat;
+            }
+          }
+        }
+
+        if (!feature && map) {
           const hits = queryParcelHits(map, lng, lat);
           if (hits.length > 0 && hits[0].geometry) {
             const geom = hits[0].geometry;
@@ -251,7 +382,12 @@ export function CadastruMap() {
           setSelectedFeature(null);
         }
 
-        const property = await fetchMockProperty(lng, lat, cadastralRef, areaSqm);
+        const property = await fetchMockProperty(
+          resolveLng,
+          resolveLat,
+          cadastralRef,
+          areaSqm,
+        );
         setSelectedProperty(property);
       } catch {
         setSelectedFeature(null);
@@ -303,7 +439,10 @@ export function CadastruMap() {
     map.addControl(new maplibregl.NavigationControl(), "top-right");
     mapRef.current = map;
 
-    map.on("load", () => loadParcelsForBounds(map));
+    map.on("load", () => {
+      loadMockLocations(map);
+      loadParcelsForBounds(map);
+    });
 
     map.on("moveend", () => {
       if (loadTimeoutRef.current) clearTimeout(loadTimeoutRef.current);

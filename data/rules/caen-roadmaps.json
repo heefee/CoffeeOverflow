@@ -5,44 +5,163 @@
     "category": "HoReCa",
     "steps": [
       {
-        "id": "cu",
-        "title": "Certificat de urbanism",
-        "authority": "Primăria Cluj-Napoca",
-        "description": "Act de informare privind regimul juridic, economic și tehnic al imobilului.",
-        "docs": ["Extras CF (max. 30 zile)", "Plan de încadrare", "Cerere tip F.1"],
-        "estimatedDays": 30,
-        "legalRef": "Legea 350/2001",
+        "id": "onrc",
+        "title": "Înregistrare / punct de lucru ONRC (CAEN 5630)",
+        "authority": "ONRC",
+        "description": "Cod CAEN 5630 la sediu sau punct de lucru; act constitutiv actualizat.",
+        "docs": [
+          "Cerere ONRC",
+          "Act constitutiv / hotărâre AGA",
+          "Contract spațiu (locațiune/comodat) sau titlu proprietate"
+        ],
+        "estimatedDays": 5,
+        "legalRef": "Legea 265/2022",
         "edirectUrl": "https://edirect.e-guvernare.ro/"
       },
       {
+        "id": "cu",
+        "title": "Certificat de urbanism",
+        "authority": "Primăria Cluj-Napoca — Serviciul Urbanism",
+        "description": "Act de informare privind regimul juridic, economic și tehnic; stabilește avizele necesare pentru autorizare.",
+        "docs": [
+          "Extras CF pentru informare (max. 30 zile, copie legalizată)",
+          "Extras plan cadastral actualizat",
+          "Plan de încadrare în zonă (PUG)",
+          "Cerere tip F.1",
+          "Dovada titlului asupra imobilului"
+        ],
+        "estimatedDays": 30,
+        "legalRef": "Legea 350/2001 · Legea 50/1991",
+        "edirectUrl": "https://primariaclujnapoca.ro/urbanism/certificate-de-urbanism/certificat-de-urbanism-1657-din-2023/"
+      },
+      {
+        "id": "apm",
+        "title": "Acord de mediu / evaluare inițială",
+        "authority": "APM Cluj-Napoca",
+        "description": "Obligație comunicată prin certificatul de urbanism — contactare APM pentru încadrare EIA.",
+        "docs": [
+          "Cerere către APM",
+          "Memoriu prezentare investiție",
+          "Certificat de urbanism"
+        ],
+        "estimatedDays": 30,
+        "dependsOn": ["cu"],
+        "legalRef": "Directiva EIA 85/337/CEE",
+        "edirectUrl": "https://primariaclujnapoca.ro/urbanism/certificate-de-urbanism/certificat-de-urbanism-1657-din-2023/"
+      },
+      {
         "id": "dsp",
-        "title": "Aviz / Autorizație sanitară DSP",
+        "title": "Aviz / Autorizație sanitară de funcționare",
         "authority": "DSP Cluj",
-        "description": "Verificarea condițiilor de igienă pentru activități cu alimente și băuturi.",
-        "docs": ["Plan amplasament", "Fișă tehnică spațiu", "Contract locațiune/proprietate"],
+        "description": "Condiții igienico-sanitare pentru servire băuturi și, dacă e cazul, alimente.",
+        "docs": [
+          "Plan amplasament",
+          "Fișă tehnică spațiu",
+          "Contract locațiune/proprietate",
+          "Proceduri igienă (HACCP simplificat dacă se servesc alimente)"
+        ],
         "estimatedDays": 20,
         "dependsOn": ["cu"],
         "edirectUrl": "https://edirect.e-guvernare.ro/"
       },
       {
         "id": "isu",
-        "title": "Aviz securitate la incendiu",
+        "title": "Aviz / Autorizație securitate la incendiu",
         "authority": "ISU Cluj",
-        "description": "Punct de vedere privind obligativitatea autorizației PSI pentru spații cu public.",
-        "docs": ["Plan evacuare", "Memoriu tehnic", "Date spațiu (suprafață, etaj)"],
+        "description": "Punct de vedere și, după caz, autorizație PSI pentru spații cu public.",
+        "docs": [
+          "Plan evacuare",
+          "Memoriu tehnic",
+          "Date spațiu (suprafață, etaj, capacitate)",
+          "Declarație pe proprie răspundere (dacă sub praguri)"
+        ],
         "estimatedDays": 15,
         "dependsOn": ["cu"],
         "edirectUrl": "https://edirect.e-guvernare.ro/"
       },
       {
-        "id": "primarie_af",
-        "title": "Autorizație de funcționare",
+        "id": "pol_locala",
+        "title": "Aviz Poliție Locală — spațiu comercial",
+        "authority": "Poliția Locală Cluj-Napoca",
+        "description": "Aviz/autorizație pentru spațiul comercial în care se desfășoară activitatea.",
+        "docs": [
+          "B.I./C.I. administrator",
+          "Contract spațiu",
+          "Plan amplasament"
+        ],
+        "estimatedDays": 15,
+        "dependsOn": ["cu"],
+        "edirectUrl": "https://edirect.e-guvernare.ro/Admin/Proceduri/ProceduraVizualizare.aspx?IdInregistrare=533917&IdOperatiune=2"
+      },
+      {
+        "id": "licenta_alcool",
+        "title": "Licență comercializare băuturi alcoolice",
         "authority": "Primăria Cluj-Napoca",
-        "description": "Autorizație pentru activități HoReCa (servire băuturi/alimentație publică).",
-        "docs": ["Avize DSP", "Aviz ISU", "Certificat urbanism", "Dovadă ONRC"],
-        "estimatedDays": 10,
+        "description": "Licență conform Legii 24/1996 pentru vânzare băuturi alcoolice în bar.",
+        "docs": [
+          "Cerere tip",
+          "Dovada spațiu",
+          "Avize DSP și ISU",
+          "Certificat fiscal",
+          "Dovada taxă licență"
+        ],
+        "estimatedDays": 20,
         "dependsOn": ["dsp", "isu"],
-        "edirectUrl": "https://edirect.e-guvernare.ro/"
+        "legalRef": "Legea 24/1996"
+      },
+      {
+        "id": "primarie_af",
+        "title": "Autorizație de funcționare — bar (alimentație publică)",
+        "authority": "Primăria Cluj-Napoca",
+        "description": "Autorizație locală pentru deschiderea barului; taxă alimentație publică conform HCL.",
+        "docs": [
+          "Cerere tip autorizație funcționare",
+          "Certificat urbanism valabil",
+          "Avize DSP și ISU",
+          "Acord de mediu (dacă e cazul)",
+          "Declarație clasificare unitate (HG 843/1999)",
+          "Contract salubrizare autorizat + ultima chitanță",
+          "Dovada taxă autorizare și taxă alimentație publică",
+          "Extras CF",
+          "Certificat ONRC",
+          "Acord scris proprietar / vecini afectați (condominiu/clădiri alipite)",
+          "Declarație respectare Legea 50/1991",
+          "Împuternicire (dacă nu depune administratorul)"
+        ],
+        "estimatedDays": 30,
+        "dependsOn": ["dsp", "isu", "apm", "licenta_alcool", "pol_locala"],
+        "legalRef": "OG 99/2000 · HCL local",
+        "edirectUrl": "https://edirect.e-guvernare.ro/Admin/Proceduri/ProceduraVizualizare.aspx?IdInregistrare=533917&IdOperatiune=2"
+      },
+      {
+        "id": "terasa",
+        "title": "Aviz urbanism + taxă ocupare domeniu public (terasă)",
+        "authority": "Primăria Cluj-Napoca",
+        "description": "Doar dacă se amenajează terasă sezonieră pe domeniul public — procedură analogă eDirect CAEN 5630/5610.",
+        "docs": [
+          "Aviz urbanism ocupare periodică domeniu public",
+          "Declarație impunere ocupare domeniu public + dovada taxă",
+          "Declarație distanță min. 100 m față de școli/lăcașe cult",
+          "Aviz mediu sau declarație sub 100 locuri (Ordin 1798/2007)"
+        ],
+        "estimatedDays": 30,
+        "dependsOn": ["primarie_af"],
+        "edirectUrl": "https://edirect.e-guvernare.ro/Admin/Proceduri/ProceduraVizualizare.aspx?IdInregistrare=533917&IdOperatiune=2"
+      },
+      {
+        "id": "muzica",
+        "title": "Autorizație zgomot / program muzical",
+        "authority": "Primăria Cluj-Napoca · Poliția Locală",
+        "description": "Pentru muzică amplificată și program prelungit; respectare hartă zgomot municipiu.",
+        "docs": [
+          "Cerere program muzical",
+          "Date echipamente audio",
+          "Plan amplasament boxe",
+          "Studiu zgomot (dacă se solicită de autoritate)"
+        ],
+        "estimatedDays": 15,
+        "dependsOn": ["primarie_af"],
+        "legalRef": "Legea 383/2025 privind zgomotul"
       }
     ]
   },
@@ -96,6 +215,130 @@
         "docs": ["Toate avizele", "ONRC", "CU"],
         "estimatedDays": 10,
         "dependsOn": ["dsp", "isu"]
+      }
+    ]
+  },
+  {
+    "caen": "5510",
+    "label": "Hoteluri și alte facilități de cazare similare",
+    "category": "Turism",
+    "steps": [
+      {
+        "id": "onrc",
+        "title": "Înregistrare ONRC — CAEN 5510",
+        "authority": "ONRC",
+        "description": "Cod CAEN hotel la sediu/punct de lucru Str. Călărașilor.",
+        "docs": ["Cerere ONRC", "Act constitutiv", "Dovada sediu social / punct lucru"],
+        "estimatedDays": 5,
+        "legalRef": "Legea 265/2022"
+      },
+      {
+        "id": "cu",
+        "title": "Certificat de urbanism",
+        "authority": "Primăria Cluj-Napoca",
+        "description": "Informare regim juridic, economic, tehnic — ZCP_Et / SZCP_Et, Cetățuia.",
+        "docs": [
+          "Extras CF 334763",
+          "Plan încadrare PUG",
+          "Cerere F.1",
+          "Dovada titlu / contract"
+        ],
+        "estimatedDays": 30,
+        "legalRef": "Legea 350/2001",
+        "edirectUrl": "https://primariaclujnapoca.ro/urbanism/certificate-de-urbanism/certificat-de-urbanism-2436-din-2021/"
+      },
+      {
+        "id": "crmci",
+        "title": "Aviz Comisia Regională Monumente Istorice",
+        "authority": "CRMCI Cluj",
+        "description": "Obligatoriu în zona construită protejată Cetățuia.",
+        "docs": ["Documentație arhitectură", "Studiu istoric", "CU"],
+        "estimatedDays": 45,
+        "dependsOn": ["cu"]
+      },
+      {
+        "id": "geotehnic",
+        "title": "Studiu geotehnic + stabilitate",
+        "authority": "Specialist atestat",
+        "description": "Zonă risc alunecări — cerință din certificatul de urbanism.",
+        "docs": ["Studiu geotehnic", "Studiu stabilitate generală"],
+        "estimatedDays": 30,
+        "dependsOn": ["cu"]
+      },
+      {
+        "id": "apm",
+        "title": "Acord de mediu",
+        "authority": "APM Cluj-Napoca",
+        "description": "Pentru investiții cu impact — hotel și capacitate mare public.",
+        "docs": ["Memoriu mediu", "CU", "Date capacitate"],
+        "estimatedDays": 30,
+        "dependsOn": ["cu"]
+      },
+      {
+        "id": "isu",
+        "title": "Autorizație / aviz securitate la incendiu",
+        "authority": "ISU Cluj",
+        "description": "Hotel P+7, subsoluri, piscină — regim PSI complex.",
+        "docs": [
+          "Scenariu securitate incendiu",
+          "Plan evacuare pe etaje",
+          "Memoriu tehnic instalații"
+        ],
+        "estimatedDays": 30,
+        "dependsOn": ["cu"]
+      },
+      {
+        "id": "dsp-cazare",
+        "title": "Aviz sanitar cazare + alimentație publică",
+        "authority": "DSP Cluj",
+        "description": "Camere hotel, restaurant, bucătărie, piscină acoperită.",
+        "docs": [
+          "Plan fluxuri alimentare",
+          "Fișă capacitate camere",
+          "Aviz/piscină acoperită"
+        ],
+        "estimatedDays": 25,
+        "dependsOn": ["cu"]
+      },
+      {
+        "id": "ac",
+        "title": "Autorizație de construire (reabilitare/modificări)",
+        "authority": "Primăria Cluj-Napoca",
+        "description": "Pentru lucrări aprobate în DALI — ex. subsol corp C1.",
+        "docs": ["DALI", "DTAC", "DTAD", "DTOE", "CU", "Toate avizele"],
+        "estimatedDays": 30,
+        "dependsOn": ["crmci", "isu", "apm", "geotehnic"]
+      },
+      {
+        "id": "clasificare",
+        "title": "Certificat de clasificare hotel (stele)",
+        "authority": "Instituția publică centrală în turism",
+        "description": "Clasificare 1–5 stele — verificare la fața locului după autorizație provizorie.",
+        "docs": [
+          "Cerere standardizată ANAT",
+          "Fișă încadrare camere pe categorii",
+          "Autorizație provizorie funcționare",
+          "Dovada dotări și servicii"
+        ],
+        "estimatedDays": 90,
+        "dependsOn": ["dsp-cazare", "isu"],
+        "legalRef": "Ordin ANAT 65/2013",
+        "edirectUrl": "https://edirect.e-guvernare.ro/Admin/Proceduri/ProceduraVizualizare.aspx?IdInregistrare=25063"
+      },
+      {
+        "id": "primarie_af",
+        "title": "Autorizație de funcționare turism + alimentație publică",
+        "authority": "Primăria Cluj-Napoca",
+        "description": "Autorizație locală după certificat clasificare și avize.",
+        "docs": [
+          "Certificat clasificare",
+          "Avize DSP, ISU",
+          "CU / AC dacă e cazul",
+          "Contract salubrizare",
+          "ONRC"
+        ],
+        "estimatedDays": 15,
+        "dependsOn": ["clasificare"]
       }
     ]
   },

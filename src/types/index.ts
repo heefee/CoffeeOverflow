@@ -35,6 +35,27 @@ export interface LandBookDetails {
   lastUpdate: string;
 }
 
+/** Imobil înscris în carte funciară: teren (nr. cadastral bază) + construcție (bază-C1). */
+export interface CadastralImobilePart {
+  role: "teren" | "constructie";
+  cadastralNumber: string;
+  carteFunciara: string;
+  areaSqm?: number;
+  usage: string;
+  buildingLabel?: string;
+}
+
+export interface PugZoneDetails {
+  code: string;
+  label: string;
+  subzones?: string[];
+  character?: string;
+  potMax?: string;
+  cutMax?: string;
+  heightRegime?: string;
+  keyRules: string[];
+}
+
 export interface UrbanismDetails {
   certificateStatus: CertificateStatus;
   certificateNumber?: string;
@@ -42,9 +63,13 @@ export interface UrbanismDetails {
   validUntil?: string;
   purpose?: string;
   pugZone: string;
+  pug?: PugZoneDetails;
   restrictions: string[];
   existingBuildings: string[];
   allowedDestinations: string[];
+  sourceUrl?: string;
+  topographicNumber?: string;
+  cadastralNumbers?: string[];
 }
 
 export interface PropertyRecord {
@@ -52,6 +77,8 @@ export interface PropertyRecord {
   address: string;
   areaSqm: number;
   pugZone: string;
+  /** Teren + construcție (cod construcție = cod teren + „-C1”). */
+  immobile?: CadastralImobilePart[];
   cadastre: CadastreInfo;
   landBook: LandBookDetails;
   urbanism: UrbanismDetails;

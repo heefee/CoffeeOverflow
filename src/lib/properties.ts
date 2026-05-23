@@ -1,11 +1,45 @@
 import type {
   Authorization,
   CadastreInfo,
+  CadastralImobilePart,
   CertificateStatus,
   LandBookDetails,
   PropertyRecord,
   UrbanismDetails,
 } from "@/types";
+
+export function buildingCadastralNumber(landCadastralNumber: string): string {
+  return `${landCadastralNumber}-C1`;
+}
+
+export function defaultImmobilePair(
+  landNumber: string,
+  cfNumber: string,
+  landAreaSqm: number,
+  landUsage: string,
+  buildingUsage: string,
+  buildingAreaSqm?: number,
+  buildingLabel = "Corp C1",
+): CadastralImobilePart[] {
+  return [
+    {
+      role: "teren",
+      cadastralNumber: landNumber,
+      carteFunciara: cfNumber,
+      areaSqm: landAreaSqm,
+      usage: landUsage,
+    },
+    {
+      role: "constructie",
+      cadastralNumber: buildingCadastralNumber(landNumber),
+      carteFunciara: cfNumber,
+      areaSqm: buildingAreaSqm,
+      usage: buildingUsage,
+      buildingLabel,
+    },
+  ];
+}
+import { findMockLocationAt, polygonCentroid } from "@/lib/mock-locations";
 import mockProperties from "../../data/mock/properties.json";
 
 const catalog = mockProperties as unknown as Record<string, Partial<PropertyRecord>>;
@@ -293,6 +327,7 @@ export function getPropertyByRef(
     return mergeProperty(generated, {
       ...stored,
       cadastralRef: stored.cadastralRef ?? decoded,
+      immobile: stored.immobile ?? generated.immobile,
       cadastre: {
         ...generated.cadastre,
         nationalCadastralRef: stored.cadastralRef ?? decoded,
@@ -302,7 +337,11 @@ export function getPropertyByRef(
         ? { ...generated.landBook, ...stored.landBook }
         : generated.landBook,
       urbanism: stored.urbanism
-        ? { ...generated.urbanism, ...stored.urbanism }
+        ? {
+            ...generated.urbanism,
+            ...stored.urbanism,
+            pug: stored.urbanism.pug ?? generated.urbanism.pug,
+          }
         : generated.urbanism,
     });
   }
@@ -310,12 +349,31 @@ export function getPropertyByRef(
   return generated;
 }
 
+const MOCK_LOCATION_PREFIX = "mock-loc:";
+
 export function getPropertyFromClick(
   lng: number,
   lat: number,
   cadastralRef?: string,
   areaSqm?: number,
 ): PropertyRecord {
+  const mockLocation = findMockLocationAt(lng, lat);
+  if (mockLocation?.properties?.id) {
+    const center = polygonCentroid(mockLocation);
+    const ref = `${MOCK_LOCATION_PREFIX}${mockLocation.properties.id}`;
+    const property = getPropertyByRef(ref, areaSqm, center.lng, center.lat);
+    let address = property.address;
+    if (mockLocation.properties.isPlanB) {
+      address = "Str. Piezișă 14, Cluj-Napoca";
+    } else if (mockLocation.properties.isBelvedere) {
+      address = "Str. Călărașilor 1, Cetățuia, Cluj-Napoca";
+    } else if (mockLocation.properties.label) {
+      address = `${mockLocation.properties.label} — ${property.address}`;
+    }
+
+    return { ...property, address };
+  }
+
   const ref = cadastralRef?.trim() || refFromCoordinates(lng, lat);
   return getPropertyByRef(ref, areaSqm, lng, lat);
 }
