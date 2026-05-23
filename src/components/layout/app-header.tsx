@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { Fingerprint } from "lucide-react";
+import { getAuthSession } from "@/lib/auth/session";
 import { ThemeToggle } from "./theme-toggle";
 
-export function AppHeader() {
+export async function AppHeader() {
+  const session = await getAuthSession();
+
   return (
     <header className="shrink-0 border-b border-border bg-card/95 backdrop-blur-sm">
       <div className="flex h-20 items-center justify-between px-4 md:px-6">
@@ -29,14 +32,28 @@ export function AppHeader() {
           >
             Roadmap CAEN
           </Link>
-          <Link
-            href="/login"
-            className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-lg border border-primary/20 bg-primary/5 px-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
-          >
-            <Fingerprint className="size-3.5" aria-hidden />
-            <span className="hidden sm:inline">Autentificare ROeID</span>
-            <span className="sm:hidden">ROeID</span>
-          </Link>
+          {session ? (
+            <form action="/api/auth/logout" method="post" className="flex items-center gap-2">
+              <span className="hidden max-w-40 truncate text-sm text-muted-foreground md:inline">
+                {session.user.name}
+              </span>
+              <button
+                type="submit"
+                className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-lg border border-primary/20 bg-primary/5 px-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+              >
+                Deconectare
+              </button>
+            </form>
+          ) : (
+            <Link
+              href="/login"
+              className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-lg border border-primary/20 bg-primary/5 px-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+            >
+              <Fingerprint className="size-3.5" aria-hidden />
+              <span className="hidden sm:inline">Autentificare ROeID</span>
+              <span className="sm:hidden">ROeID</span>
+            </Link>
+          )}
         </nav>
       </div>
     </header>
