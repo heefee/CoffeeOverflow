@@ -1,4 +1,4 @@
-# CadastruGuide — Foaie de parcurs produs
+# eAvizat (sau nu?) — Foaie de parcurs produs
 
 ## MVP (Hackathon) — livrat
 

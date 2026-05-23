@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { CLUJ_BBOX, CLUJ_CENTER } from "@/lib/constants";
 import { getCadastralRef } from "@/lib/ancpi";
+import { getPropertyFromClick } from "@/lib/properties";
 import {
   findMockLocationAt,
   getMockLocations,
@@ -12,7 +13,8 @@ import {
   type MockLocationFeature,
 } from "@/lib/mock-locations";
 import { useAppStore } from "@/store/app-store";
-import type { AncpiFeature } from "@/types";
+import type { AncpiFeature, PropertyRecord } from "@/types";
+import { Input } from "@/components/ui/input";
 import { MapDisclaimer } from "./map-disclaimer";
 
 const PARCELS_SOURCE = "ancpi-parcels";
@@ -23,6 +25,21 @@ const MOCK_LOCATIONS_LINE = "mock-locations-line";
 const SELECTED_SOURCE = "selected-parcel";
 const SELECTED_LAYER = "selected-parcel-fill";
 const CLICK_MARKER_SOURCE = "click-marker";
+const LIGHT_BASEMAP_SOURCE = "basemap-light";
+const LIGHT_BASEMAP_LAYER = "basemap-light";
+const DARK_BASEMAP_SOURCE = "basemap-dark";
+const DARK_BASEMAP_LAYER = "basemap-dark";
+
+function isDarkTheme(): boolean {
+  return document.documentElement.classList.contains("dark");
+}
+
+function syncBasemapTheme(map: maplibregl.Map) {
+  if (!map.getLayer(LIGHT_BASEMAP_LAYER) || !map.getLayer(DARK_BASEMAP_LAYER)) return;
+  const dark = isDarkTheme();
+  map.setLayoutProperty(LIGHT_BASEMAP_LAYER, "visibility", dark ? "none" : "visible");
+  map.setLayoutProperty(DARK_BASEMAP_LAYER, "visibility", dark ? "visible" : "none");
+}
 
 function hasParcelLayer(map: maplibregl.Map): boolean {
   return Boolean(map.getLayer(PARCELS_LAYER));
@@ -89,8 +106,8 @@ function loadMockLocations(map: maplibregl.Map) {
       "fill-opacity": [
         "case",
         ["any", ["==", ["get", "isPlanB"], true], ["==", ["get", "isBelvedere"], true]],
-        0.5,
-        0.32,
+        0.62,
+        0.42,
       ],
     },
   });
@@ -103,16 +120,16 @@ function loadMockLocations(map: maplibregl.Map) {
         "match",
         ["get", "kind"],
         "owned",
-        "#15803d",
+        "#22c55e",
         "competitor",
-        "#b91c1c",
-        "#64748b",
+        "#f87171",
+        "#cbd5e1",
       ],
       "line-width": [
         "case",
         ["any", ["==", ["get", "isPlanB"], true], ["==", ["get", "isBelvedere"], true]],
-        3,
-        2,
+        4,
+        2.75,
       ],
     },
   });
@@ -131,6 +148,148 @@ function ensureMockLocationsOnTop(map: maplibregl.Map) {
   if (!hasParcelLayer(map)) return;
   map.moveLayer(MOCK_LOCATIONS_FILL);
   map.moveLayer(MOCK_LOCATIONS_LINE);
+}
+
+interface PropertySearchResult {
+  feature: MockLocationFeature;
+  property: PropertyRecord;
+  queryText: string;
+}
+
+function normalizeSearch(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function buildSearchResults(): PropertySearchResult[] {
+  return getMockLocations().features.map((feature) => {
+    const center = polygonCentroid(feature);
+    const property = getPropertyFromClick(center.lng, center.lat);
+    const activityText = [
+      ...property.authorizations.existing.map((authorization) => authorization.type),
+      ...property.authorizations.possible.map((authorization) => authorization.type),
+      property.urbanism.purpose ?? "",
+      property.urbanism.allowedDestinations.join(" "),
+    ].join(" ");
+
+    return {
+      feature,
+      property,
+      queryText: normalizeSearch(
+        [
+          feature.properties.label,
+          feature.properties.id,
+          property.address,
+          property.cadastralRef,
+          property.landBook.number,
+          property.cadastre.localCadastralNumber,
+          activityText,
+        ].join(" "),
+      ),
+    };
+  });
+}
+
+function MapSearch({
+  onSelect,
+}: {
+  onSelect: (result: PropertySearchResult) => void;
+}) {
+  const [query, setQuery] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const searchResults = useMemo(() => buildSearchResults(), []);
+  const normalizedQuery = normalizeSearch(query.trim());
+  const filteredResults = normalizedQuery
+    ? searchResults
+        .filter((result) => result.queryText.includes(normalizedQuery))
+        .slice(0, 6)
+    : [];
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (filteredResults[0]) {
+      onSelect(filteredResults[0]);
+      setIsFocused(false);
+    }
+  }
+
+  return (
+    <div className="absolute left-1/2 top-4 z-20 w-[min(560px,calc(100%-2rem))] -translate-x-1/2">
+      <form onSubmit={submitSearch} className="relative">
+        <Input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          onFocus={() => setIsFocused(true)}
+          placeholder="Caută după adresă, activitate sau nr. CF"
+          className="h-11 rounded-xl bg-card/95 px-4 pr-24 text-sm shadow-lg backdrop-blur-md dark:bg-card/85"
+        />
+        <button
+          type="submit"
+          className="absolute right-1.5 top-1.5 h-8 cursor-pointer rounded-lg bg-primary px-3 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+        >
+          Caută
+        </button>
+      </form>
+
+      {isFocused && query.trim() ? (
+        <div className="mt-2 overflow-hidden rounded-xl bg-card/95 text-sm text-card-foreground shadow-xl backdrop-blur-md dark:bg-card/90">
+          {filteredResults.length ? (
+            <ul className="max-h-72 overflow-y-auto py-1">
+              {filteredResults.map((result) => (
+                <li key={result.feature.properties.id}>
+                  <button
+                    type="button"
+                    className="w-full cursor-pointer px-4 py-3 text-left transition-colors hover:bg-secondary"
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => {
+                      onSelect(result);
+                      setQuery(result.property.address);
+                      setIsFocused(false);
+                    }}
+                  >
+                    <span className="block font-medium text-foreground">
+                      {result.feature.properties.label}
+                    </span>
+                    <span className="mt-0.5 block text-xs text-muted-foreground">
+                      {result.property.address} · {result.property.landBook.number}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="px-4 py-3 text-muted-foreground">Nicio proprietate găsită.</p>
+          )}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function MapLegend() {
+  return (
+    <div className="pointer-events-none absolute bottom-9 right-[36px] z-10 rounded-xl bg-card/90 px-4 py-3 text-xs text-card-foreground shadow-lg backdrop-blur-md dark:bg-card/80">
+      <p className="mb-2 font-semibold uppercase tracking-wide text-primary">Legendă</p>
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <span
+            className="h-3 w-6 rounded-sm border-2 border-[#f87171] bg-[#ef4444]/35"
+            aria-hidden
+          />
+          <span>Spațiu comercial</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span
+            className="h-3 w-6 rounded-sm border-2 border-[#22c55e] bg-[#22c55e]/35"
+            aria-hidden
+          />
+          <span>Teren agricol</span>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function bindParcelHoverHandlers(map: maplibregl.Map) {
@@ -218,7 +377,7 @@ export function CadastruMap() {
           source: PARCELS_SOURCE,
           paint: {
             "fill-color": "#1e3a5f",
-            "fill-opacity": 0.2,
+            "fill-opacity": 0.26,
             "fill-outline-color": "#1e3a5f",
           },
         });
@@ -229,7 +388,7 @@ export function CadastruMap() {
           paint: {
             "line-color": "#1e3a5f",
             "line-width": 1,
-            "line-opacity": 0.6,
+            "line-opacity": 0.78,
           },
         });
         if (!parcelHoverBoundRef.current) {
@@ -266,9 +425,9 @@ export function CadastruMap() {
         source: CLICK_MARKER_SOURCE,
         paint: {
           "circle-radius": 10,
-          "circle-color": "#3b6fa0",
-          "circle-stroke-width": 2,
-          "circle-stroke-color": "#fff",
+          "circle-color": "#f2ca50",
+          "circle-stroke-width": 3,
+          "circle-stroke-color": "#0f141a",
         },
       });
     }
@@ -296,8 +455,8 @@ export function CadastruMap() {
         type: "fill",
         source: SELECTED_SOURCE,
         paint: {
-          "fill-color": "#3b6fa0",
-          "fill-opacity": 0.4,
+          "fill-color": "#f2ca50",
+          "fill-opacity": 0.36,
         },
       });
       map.addLayer({
@@ -305,8 +464,8 @@ export function CadastruMap() {
         type: "line",
         source: SELECTED_SOURCE,
         paint: {
-          "line-color": "#3b6fa0",
-          "line-width": 3,
+          "line-color": "#f2ca50",
+          "line-width": 4,
         },
       });
     }
@@ -407,15 +566,33 @@ export function CadastruMap() {
     ],
   );
 
+  const handleSearchSelect = useCallback(
+    (result: PropertySearchResult) => {
+      const map = mapRef.current;
+      const center = polygonCentroid(result.feature);
+      const feature = mockFeatureToAncpi(result.feature);
+
+      setSelectedProperty(result.property);
+      setSelectedFeature(feature);
+
+      if (!map) return;
+      map.flyTo({ center: [center.lng, center.lat], zoom: 16, duration: 900 });
+      showClickMarker(map, center.lng, center.lat);
+      highlightFeature(map, feature);
+    },
+    [highlightFeature, setSelectedFeature, setSelectedProperty, showClickMarker],
+  );
+
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
+    const darkMode = isDarkTheme();
 
     const map = new maplibregl.Map({
       container: containerRef.current,
       style: {
         version: 8,
         sources: {
-          basemap: {
+          [LIGHT_BASEMAP_SOURCE]: {
             type: "raster",
             tiles: [
               "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png",
@@ -425,8 +602,43 @@ export function CadastruMap() {
               '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
             maxzoom: 19,
           },
+          [DARK_BASEMAP_SOURCE]: {
+            type: "raster",
+            tiles: [
+              "https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
+            ],
+            tileSize: 256,
+            attribution:
+              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            maxzoom: 19,
+          },
         },
-        layers: [{ id: "basemap", type: "raster", source: "basemap" }],
+        layers: [
+          {
+            id: LIGHT_BASEMAP_LAYER,
+            type: "raster",
+            source: LIGHT_BASEMAP_SOURCE,
+            layout: { visibility: darkMode ? "none" : "visible" },
+            paint: {
+              "raster-contrast": 0.14,
+              "raster-saturation": 0.08,
+              "raster-brightness-min": 0.03,
+              "raster-brightness-max": 0.98,
+            },
+          },
+          {
+            id: DARK_BASEMAP_LAYER,
+            type: "raster",
+            source: DARK_BASEMAP_SOURCE,
+            layout: { visibility: darkMode ? "visible" : "none" },
+            paint: {
+              "raster-contrast": 0.18,
+              "raster-saturation": 0.05,
+              "raster-brightness-min": 0.24,
+              "raster-brightness-max": 1,
+            },
+          },
+        ],
       },
       center: CLUJ_CENTER,
       zoom: 14,
@@ -438,8 +650,16 @@ export function CadastruMap() {
 
     map.addControl(new maplibregl.NavigationControl(), "top-right");
     mapRef.current = map;
+    const syncTheme = () => syncBasemapTheme(map);
+    const themeObserver = new MutationObserver(syncTheme);
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    window.addEventListener("eavizat-theme-change", syncTheme);
 
     map.on("load", () => {
+      syncTheme();
       loadMockLocations(map);
       loadParcelsForBounds(map);
     });
@@ -455,6 +675,8 @@ export function CadastruMap() {
 
     return () => {
       if (loadTimeoutRef.current) clearTimeout(loadTimeoutRef.current);
+      themeObserver.disconnect();
+      window.removeEventListener("eavizat-theme-change", syncTheme);
       parcelHoverBoundRef.current = false;
       map.remove();
       mapRef.current = null;
@@ -464,6 +686,8 @@ export function CadastruMap() {
   return (
     <div className="relative h-full w-full">
       <div ref={containerRef} className="h-full w-full" />
+      <MapSearch onSelect={handleSearchSelect} />
+      <MapLegend />
       <MapDisclaimer />
     </div>
   );

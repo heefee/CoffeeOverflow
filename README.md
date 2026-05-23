@@ -1,4 +1,4 @@
-# CadastruGuide
+# eAvizat (sau nu?)
 
 Platformă web pentru antreprenori din **Cluj-Napoca**: hartă cu parcele ANCPI, detalii imobil (demo), roadmap autorizări după cod **CAEN**.
 

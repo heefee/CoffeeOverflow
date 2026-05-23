@@ -1,17 +1,22 @@
 import Link from "next/link";
 import { Fingerprint } from "lucide-react";
+import { ThemeToggle } from "./theme-toggle";
 
 export function AppHeader() {
   return (
     <header className="shrink-0 border-b border-border bg-card/95 backdrop-blur-sm">
-      <div className="flex h-14 items-center justify-between px-4 md:px-6">
+      <div className="flex h-20 items-center justify-between px-4 md:px-6">
         <Link
           href="/"
-          className="font-heading text-lg font-semibold tracking-tight text-primary"
+          className="flex flex-col font-heading text-[32px] font-semibold leading-none tracking-tight text-primary"
         >
-          CadastruGuide
+          <span>eAvizat</span>
+          <span className="mt-1.5 font-mono text-[18px] font-normal tracking-normal text-muted-foreground">
+            (sau nu?)
+          </span>
         </Link>
         <nav className="flex items-center gap-2 md:gap-3">
+          <ThemeToggle />
           <Link
             href="/harta"
             className="cursor-pointer text-sm text-muted-foreground transition-colors hover:text-primary"

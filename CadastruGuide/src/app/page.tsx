@@ -43,13 +43,13 @@ export default function HomePage() {
       <main>
         <section className="mx-auto max-w-5xl px-4 py-16 text-center md:py-24">
           <p className="mb-3 text-sm font-medium uppercase tracking-widest text-accent">
-            Cluj-Napoca · MVP Hackathon
+            Cluj-Napoca for now, but national platform in the future.
           </p>
           <h1 className="font-heading text-4xl font-semibold leading-tight text-foreground md:text-5xl">
             Înțelege imobilul înainte de investiție
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            CadastruGuide centralizează informații de cadastru, urbanism și autorizații
+            eAvizat (sau nu?) centralizează informații de cadastru, urbanism și autorizații
             pentru antreprenorii care vor să cumpere sau să deschidă o afacere pe un
             imobil din Cluj.
           </p>
@@ -109,7 +109,7 @@ export default function HomePage() {
         </section>
       </main>
       <footer className="mt-auto border-t border-border py-6 text-center text-xs text-muted-foreground">
-        CadastruGuide · Geometrie ANCPI · Date juridice demonstrative în MVP
+        eAvizat (sau nu?) · Geometrie ANCPI · Date juridice demonstrative în MVP
       </footer>
     </div>
   );
