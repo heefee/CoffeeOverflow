@@ -23,6 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { CaenOption, CaenRoadmap, PropertyRecord, RoadmapStep } from "@/types";
+import { RoadmapStepsList } from "./roadmap-steps-list";
 
 const DEMO_SPACE_REFS = [
   "424500-CF-001234",
@@ -212,11 +213,12 @@ function zoneBadgeVariant(zoneFit: SpaceAnalysis["zoneFit"]) {
 
 interface RoadmapCaenPageClientProps {
   initialCf?: string;
+  initialCaen?: string;
 }
 
-export function RoadmapCaenPageClient({ initialCf }: RoadmapCaenPageClientProps) {
+export function RoadmapCaenPageClient({ initialCf, initialCaen }: RoadmapCaenPageClientProps) {
   const [mode, setMode] = useState<Mode>("audit");
-  const [caenQuery, setCaenQuery] = useState("");
+  const [caenQuery, setCaenQuery] = useState(initialCaen ?? "");
   const [caenOptions, setCaenOptions] = useState<CaenOption[]>([]);
   const [roadmap, setRoadmap] = useState<CaenRoadmap | null>(null);
   const [cfNumber, setCfNumber] = useState(initialCf ?? "");
@@ -229,6 +231,8 @@ export function RoadmapCaenPageClient({ initialCf }: RoadmapCaenPageClientProps)
     () => caenOptions.find((option) => option.code === caenQuery.trim()),
     [caenOptions, caenQuery],
   );
+
+  const docsStorageScope = cfNumber.trim() || "general";
 
   useEffect(() => {
     if (initialCf) {
@@ -269,6 +273,16 @@ export function RoadmapCaenPageClient({ initialCf }: RoadmapCaenPageClientProps)
     setCaenQuery(data.caen);
     return data;
   }
+
+  useEffect(() => {
+    if (!initialCaen) return;
+    setCaenQuery(initialCaen);
+    setError(null);
+    loadRoadmap(initialCaen).catch((err) => {
+      setRoadmap(null);
+      setError(err instanceof Error ? err.message : "Nu am putut încărca roadmap-ul.");
+    });
+  }, [initialCaen]);
 
   async function handleAuditSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -504,6 +518,12 @@ export function RoadmapCaenPageClient({ initialCf }: RoadmapCaenPageClientProps)
           </div>
         ) : null}
       </section>
+
+      {roadmap ? (
+        <section className="border-t border-border pt-8 lg:col-span-2">
+          <RoadmapStepsList roadmap={roadmap} storageScope={docsStorageScope} />
+        </section>
+      ) : null}
     </div>
   );
 }
@@ -579,38 +599,6 @@ function AnalysisCard({
               )}
             </ul>
           </div>
-        </div>
-
-        <div className="space-y-3">
-          <p className="text-sm font-medium text-foreground">Detaliu pași</p>
-          {analysis.steps.map((item) => (
-            <div key={item.step.id} className="rounded-lg border border-border p-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="font-medium text-foreground">{item.step.title}</p>
-                <Badge
-                  variant={
-                    item.state === "ready"
-                      ? "default"
-                      : item.state === "external"
-                        ? "secondary"
-                        : "destructive"
-                  }
-                >
-                  {item.state === "ready"
-                    ? "pregătit"
-                    : item.state === "external"
-                      ? "în afara spațiului"
-                      : "lipsește"}
-                </Badge>
-              </div>
-              <p className="mt-1 text-sm text-muted-foreground">{item.reason}</p>
-              {item.state === "missing" ? (
-                <p className="mt-2 text-xs text-muted-foreground">
-                  Documente utile: {item.step.docs.join(", ")}
-                </p>
-              ) : null}
-            </div>
-          ))}
         </div>
       </CardContent>
     </Card>
