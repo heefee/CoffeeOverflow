@@ -25,7 +25,18 @@ export function CaenSelector({ compact }: CaenSelectorProps) {
   };
 
   useEffect(() => {
-    search("");
+    let ignore = false;
+
+    async function loadInitialOptions() {
+      const res = await fetch("/api/caen/search?q=");
+      const data = (await res.json()) as CaenOption[];
+      if (!ignore) setOptions(data);
+    }
+
+    loadInitialOptions();
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const selectCaen = async (code: string) => {

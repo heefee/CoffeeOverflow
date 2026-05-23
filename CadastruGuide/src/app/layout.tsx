@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CadastruGuide — Cadastru, urbanism și autorizații în Cluj",
+  title: "eAvizat (sau nu?) — Cadastru, urbanism și autorizații în Cluj",
   description:
     "Platformă pentru antreprenori: parcele ANCPI, carte funciară, urbanism și roadmap autorizări după cod CAEN.",
 };

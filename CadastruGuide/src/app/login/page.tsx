@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Autentificare ROeID — CadastruGuide",
+  title: "Autentificare ROeID — eAvizat (sau nu?)",
   description:
     "Conectează-te cu ROeID pentru acces complet la datele imobilului: proprietari, sarcini detaliate și istoric autorizații.",
 };
