@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAppStore } from "@/store/app-store";
 import type { Authorization, PropertyRecord, RoadmapStep } from "@/types";
 import { ArrowLeft, CheckCircle2, CircleDashed, Clock, ExternalLink } from "lucide-react";
+import { RoadmapStepDocsChecklist } from "./roadmap-step-docs-checklist";
 
 interface RoadmapPanelProps {
   onBack: () => void;
@@ -256,14 +257,13 @@ export function RoadmapPanel({ onBack }: RoadmapPanelProps) {
                     Depinde de: {step.dependsOn.join(", ")}
                   </p>
                 ) : null}
-                <ul className="text-xs text-muted-foreground">
-                  {step.docs.map((d) => (
-                    <li key={d} className="flex items-center gap-1">
-                      <CheckCircle2 className="size-3 text-success" />
-                      {d}
-                    </li>
-                  ))}
-                </ul>
+                <RoadmapStepDocsChecklist
+                  caen={roadmap.caen}
+                  stepId={step.id}
+                  docs={step.docs}
+                  storageScope={selectedProperty?.cadastralRef ?? "general"}
+                  compact
+                />
                 {step.legalRef ? (
                   <p className="text-xs text-muted-foreground">{step.legalRef}</p>
                 ) : null}
