@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ClujHeroSection } from "@/components/home/cluj-hero-section";
 import { SiteHeader } from "@/components/layout/site-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -34,7 +35,7 @@ export default function HomePage() {
     <div className="flex min-h-full flex-col bg-background">
       <SiteHeader />
       <main>
-        <section className="mx-auto max-w-5xl px-4 py-16 text-center md:py-24">
+        <ClujHeroSection>
           <p className="mb-3 text-sm font-medium uppercase tracking-widest text-accent">
             Cluj-Napoca for now, but national platform in the future.
           </p>
@@ -63,7 +64,7 @@ export default function HomePage() {
           <p className="mt-6 text-xs text-muted-foreground">
             Date juridice demo în MVP
           </p>
-        </section>
+        </ClujHeroSection>
 
         <section className="border-t border-border bg-card/60 py-16">
           <div className="mx-auto grid max-w-5xl gap-6 px-4 sm:grid-cols-2 lg:grid-cols-3">
