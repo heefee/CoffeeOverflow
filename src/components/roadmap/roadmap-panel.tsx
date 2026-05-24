@@ -1,5 +1,6 @@
 "use client";
 
+import { LegalDictionaryArea } from "@/components/dictionary/legal-dictionary-area";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -143,7 +144,7 @@ export function RoadmapPanel({ onBack }: RoadmapPanelProps) {
   ).length;
 
   return (
-    <div className="flex h-full flex-col">
+    <LegalDictionaryArea className="flex h-full flex-col">
       <div className="border-b border-border p-4">
         <Button
           variant="ghost"
@@ -283,6 +284,6 @@ export function RoadmapPanel({ onBack }: RoadmapPanelProps) {
           </li>
         ))}
       </ol>
-    </div>
+    </LegalDictionaryArea>
   );
 }

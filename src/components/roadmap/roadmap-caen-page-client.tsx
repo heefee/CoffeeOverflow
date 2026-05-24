@@ -12,6 +12,7 @@ import {
   Search,
   XCircle,
 } from "lucide-react";
+import { LegalDictionaryArea } from "@/components/dictionary/legal-dictionary-area";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -346,7 +347,7 @@ export function RoadmapCaenPageClient({ initialCf, initialCaen }: RoadmapCaenPag
   }
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-6 px-4 py-10 lg:grid-cols-[0.9fr_1.1fr]">
+    <LegalDictionaryArea className="mx-auto grid max-w-6xl gap-6 px-4 py-10 lg:grid-cols-[0.9fr_1.1fr]">
       <section className="space-y-6">
         <div>
           <p className="mb-3 text-sm font-medium uppercase tracking-widest text-accent">
@@ -524,7 +525,7 @@ export function RoadmapCaenPageClient({ initialCf, initialCaen }: RoadmapCaenPag
           <RoadmapStepsList roadmap={roadmap} storageScope={docsStorageScope} />
         </section>
       ) : null}
-    </div>
+    </LegalDictionaryArea>
   );
 }
 
