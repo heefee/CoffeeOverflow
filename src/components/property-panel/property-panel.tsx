@@ -23,6 +23,7 @@ import {
   MapPin,
   Shield,
 } from "lucide-react";
+import { LegalDictionaryArea } from "@/components/dictionary/legal-dictionary-area";
 import { CaenSelector } from "@/components/roadmap/caen-selector";
 import { RoadmapPanel } from "@/components/roadmap/roadmap-panel";
 import { DetailRow } from "./detail-row";
@@ -206,7 +207,7 @@ export function PropertyPanel() {
 
   return (
     <ScrollArea className="h-full">
-      <div className="space-y-4 p-4 md:p-5">
+      <LegalDictionaryArea className="space-y-4 p-4 md:p-5">
         <div>
           <Badge variant="outline" className="mb-2 text-[10px] uppercase tracking-wide">
             Date demonstrative
@@ -546,7 +547,7 @@ export function PropertyPanel() {
         </Tabs>
 
         <CaenSelector compact />
-      </div>
+      </LegalDictionaryArea>
     </ScrollArea>
   );
 }
