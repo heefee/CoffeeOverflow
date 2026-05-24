@@ -33,7 +33,7 @@ npm install
 Pornește baza de date PostgreSQL locală în Docker:
 
 ```powershell
-docker run -d --name eavizat-postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -v eavizat-postgres-data:/var/lib/postgresql/data postgres:16
+docker run -d --name eavizat-postgres -e POSTGRES_HOST_AUTH_METHOD=trust -p 5433:5432 -v eavizat-postgres-data:/var/lib/postgresql/data postgres:16
 ```
 
 Dacă ai creat deja containerul și este oprit:
@@ -46,6 +46,16 @@ Rulează scriptul SQL pentru baza de date:
 
 ```powershell
 Get-Content "scripts\setup-local-db.sql" | docker exec -i eavizat-postgres psql -U postgres
+```
+
+Portul local `5433` evită conflictul cu instalări PostgreSQL existente pe Windows care folosesc deja `5432`.
+
+Pentru setup-ul local fără parolă la userul aplicației (`eavizat`), scriptul Docker pornește cu `POSTGRES_HOST_AUTH_METHOD=trust`. Dacă folosești un container existent, poți permite autentificarea trust și reîncărca PostgreSQL:
+
+```powershell
+$hba = docker exec eavizat-postgres psql -U postgres -tAc "SHOW hba_file;"
+docker exec eavizat-postgres sh -c "sed -i 's/^host all all all scram-sha-256/host all all all trust/' '$hba'"
+docker exec eavizat-postgres psql -U postgres -c "SELECT pg_reload_conf();"
 ```
 
 Creează `.env.local` pornind de la `.env.example`, apoi pornește aplicația:
@@ -62,7 +72,7 @@ Pentru dezvoltare locală, valorile importante sunt:
 
 ```env
 MOCK_ROEID=true
-DATABASE_URL=postgresql://eavizat:eavizat@localhost:5432/eavizat
+DATABASE_URL=postgresql://eavizat@localhost:5433/eavizat
 DATABASE_SSL=false
 RESEND_API_KEY=
 RESEND_FROM_EMAIL=onboarding@resend.dev

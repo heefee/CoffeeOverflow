@@ -16,6 +16,7 @@ import type {
   PropertyRecord,
 } from "@/types";
 import {
+  Bell,
   Building2,
   ExternalLink,
   FileText,
@@ -161,6 +162,160 @@ function ComplianceChecklist({
   );
 }
 
+function PropertySubscriptionCard({
+  property,
+  propertyLabel,
+}: {
+  property: PropertyRecord;
+  propertyLabel: string;
+}) {
+  const [authenticated, setAuthenticated] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const propertyRef = property.cadastralRef;
+
+  useEffect(() => {
+    let ignore = false;
+    setLoading(true);
+    setMessage(null);
+    setError(null);
+
+    fetch(`/api/properties/${encodeURIComponent(propertyRef)}/subscription`, {
+      cache: "no-store",
+    })
+      .then((response) => response.json())
+      .then((data: { authenticated?: boolean; subscribed?: boolean }) => {
+        if (ignore) return;
+        setAuthenticated(Boolean(data.authenticated));
+        setSubscribed(Boolean(data.subscribed));
+      })
+      .catch(() => {
+        if (!ignore) setError("Nu am putut verifica abonarea.");
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [propertyRef]);
+
+  async function toggleSubscription() {
+    setLoading(true);
+    setMessage(null);
+    setError(null);
+    try {
+      const response = await fetch(
+        `/api/properties/${encodeURIComponent(propertyRef)}/subscription`,
+        {
+          method: subscribed ? "DELETE" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: subscribed
+            ? undefined
+            : JSON.stringify({
+                propertyLabel,
+                propertyAddress: property.address,
+              }),
+        },
+      );
+      const data = (await response.json()) as { error?: string; subscribed?: boolean };
+      if (!response.ok) throw new Error(data.error ?? "Operațiunea a eșuat.");
+      setSubscribed(Boolean(data.subscribed));
+      setMessage(data.subscribed ? "Te-ai abonat la proprietate." : "Abonarea a fost anulată.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Operațiunea a eșuat.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function simulateExpiration() {
+    setLoading(true);
+    setMessage(null);
+    setError(null);
+    try {
+      const response = await fetch(
+        `/api/properties/${encodeURIComponent(propertyRef)}/simulate-expiration`,
+        { method: "POST", headers: { "Content-Type": "application/json" } },
+      );
+      const data = (await response.json()) as {
+        error?: string;
+        emailDelivery?: { sent: boolean; to?: string; error?: string };
+      };
+      if (!response.ok) throw new Error(data.error ?? "Simularea a eșuat.");
+      window.dispatchEvent(new Event("eavizat:notifications-refresh"));
+      setMessage(
+        data.emailDelivery?.sent
+          ? `Am creat notificarea demo și am trimis emailul către ${data.emailDelivery.to}.`
+          : `Am creat notificarea în aplicație, dar emailul nu a fost trimis${
+              data.emailDelivery?.error ? `: ${data.emailDelivery.error}` : "."
+            }`,
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Simularea a eșuat.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (!authenticated && !loading) {
+    return (
+      <Card className="border-border">
+        <CardContent className="space-y-2 pt-4">
+          <p className="text-sm font-medium text-foreground">Abonare notificări</p>
+          <p className="text-sm text-muted-foreground">
+            Autentifică-te ca să primești notificări email și în aplicație pentru autorizații
+            aproape de expirare.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="border-primary/20 bg-primary/5">
+      <CardHeader className="pb-2">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Bell className="size-4 text-primary" />
+          Abonare notificări
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <p className="text-sm text-muted-foreground">
+          Primești email și notificare în aplicație când o autorizație de pe acest imobil mai
+          are o lună până la expirare.
+        </p>
+        {message ? <p className="text-sm text-success">{message}</p> : null}
+        {error ? <p className="text-sm text-destructive">{error}</p> : null}
+        <div className="flex flex-col gap-2">
+          <Button
+            type="button"
+            className="cursor-pointer"
+            variant={subscribed ? "outline" : "default"}
+            disabled={loading}
+            onClick={toggleSubscription}
+          >
+            {subscribed ? "Dezabonează-te" : "Abonează-te la proprietate"}
+          </Button>
+          <Button
+            type="button"
+            className="cursor-pointer"
+            variant="secondary"
+            disabled={loading || !subscribed}
+            onClick={simulateExpiration}
+          >
+            Simulează expirare în 30 de zile
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export function PropertyPanel() {
   const router = useRouter();
   const {
@@ -206,6 +361,7 @@ export function PropertyPanel() {
   const activeAuthorizationsCount = p.authorizations.existing.filter(
     (authorization) => authorization.status === "active",
   ).length;
+  const propertyLabel = selectedFeature?.properties.id_localId ?? p.cadastralRef;
 
   return (
     <ScrollArea className="h-full">
@@ -218,7 +374,7 @@ export function PropertyPanel() {
             Referință cadastrală
           </p>
           <h2 className="font-heading text-lg font-semibold text-foreground">
-            {selectedFeature?.properties.id_localId ?? p.cadastralRef}
+            {propertyLabel}
           </h2>
           {selectedFeature?.properties.id_localId &&
           selectedFeature.properties.id_localId !== p.cadastralRef ? (
@@ -250,6 +406,7 @@ export function PropertyPanel() {
           </TabsList>
 
           <TabsContent value="rezumat" className="mt-3 space-y-3">
+            <PropertySubscriptionCard property={p} propertyLabel={propertyLabel} />
             <Card className="border-border shadow-sm">
               <CardContent className="space-y-2 pt-4">
                 <DetailRow

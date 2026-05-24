@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { Fingerprint } from "lucide-react";
 import { getAuthSession } from "@/lib/auth/session";
+import { NotificationsBell } from "@/components/notifications/notifications-bell";
 import { ThemeToggle } from "./theme-toggle";
 
 export async function AppHeader() {
   const session = await getAuthSession();
 
   return (
-    <header className="shrink-0 border-b border-border bg-card/95 backdrop-blur-sm">
+    <header className="relative z-[2000] shrink-0 overflow-visible border-b border-border bg-card/95 backdrop-blur-sm">
       <div className="flex h-20 items-center justify-between px-4 md:px-6">
         <Link
           href="/"
@@ -33,17 +34,20 @@ export async function AppHeader() {
             Roadmap CAEN
           </Link>
           {session ? (
-            <form action="/api/auth/logout" method="post" className="flex items-center gap-2">
-              <span className="hidden max-w-40 truncate text-sm text-muted-foreground md:inline">
-                {session.user.name}
-              </span>
-              <button
-                type="submit"
-                className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-lg border border-primary/20 bg-primary/5 px-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
-              >
-                Deconectare
-              </button>
-            </form>
+            <>
+              <NotificationsBell />
+              <form action="/api/auth/logout" method="post" className="flex items-center gap-2">
+                <span className="hidden max-w-40 truncate text-sm text-muted-foreground md:inline">
+                  {session.user.name}
+                </span>
+                <button
+                  type="submit"
+                  className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-lg border border-primary/20 bg-primary/5 px-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+                >
+                  Deconectare
+                </button>
+              </form>
+            </>
           ) : (
             <Link
               href="/login"

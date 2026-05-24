@@ -59,6 +59,40 @@ export async function ensureAuthSchema() {
       CREATE INDEX IF NOT EXISTS email_verification_codes_email_idx
       ON email_verification_codes (email, created_at DESC);
     `);
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS property_subscriptions (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL REFERENCES app_users(id) ON DELETE CASCADE,
+        property_ref TEXT NOT NULL,
+        property_label TEXT NOT NULL,
+        property_address TEXT NOT NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        UNIQUE (user_id, property_ref)
+      );
+    `);
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS property_notifications (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL REFERENCES app_users(id) ON DELETE CASCADE,
+        property_ref TEXT NOT NULL,
+        authorization_id TEXT NOT NULL,
+        title TEXT NOT NULL,
+        message TEXT NOT NULL,
+        expires_at TIMESTAMPTZ NOT NULL,
+        notify_at TIMESTAMPTZ NOT NULL,
+        email_sent_at TIMESTAMPTZ,
+        read_at TIMESTAMPTZ,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+    `);
+    await db.query(`
+      CREATE UNIQUE INDEX IF NOT EXISTS property_notifications_unique_idx
+      ON property_notifications (user_id, property_ref, authorization_id, expires_at);
+    `);
+    await db.query(`
+      CREATE INDEX IF NOT EXISTS property_notifications_user_idx
+      ON property_notifications (user_id, created_at DESC);
+    `);
   })();
 
   return schemaReady;
