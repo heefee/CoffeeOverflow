@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AppHeader } from "@/components/layout/app-header";
-import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import {
@@ -18,7 +17,22 @@ export const metadata: Metadata = {
     "Conectează-te cu ROeID pentru acces complet la datele imobilului: proprietari, sarcini detaliate și istoric autorizații.",
 };
 
-export default function LoginPage() {
+const authErrors: Record<string, string> = {
+  config:
+    "Configurarea ROeID lipsește sau este incompletă. Pentru dezvoltare setează MOCK_ROEID=true.",
+  callback: "ROeID nu a returnat un cod de autentificare valid.",
+  state: "Sesiunea de autentificare a expirat sau nu mai este validă. Încearcă din nou.",
+  roeid: "Nu am putut finaliza autentificarea ROeID. Încearcă din nou.",
+};
+
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
+  const errorMessage = error ? authErrors[error] : null;
+
   return (
     <div className="flex min-h-[100dvh] flex-col bg-background">
       <AppHeader />
@@ -34,25 +48,26 @@ export default function LoginPage() {
               Autentificare ROeID
             </h1>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Accesul complet la datele imobilului — inclusiv proprietari, sarcini
-              detaliate și istoric autorizații — este disponibil doar pentru utilizatori
-              verificați prin ROeID.
+            Conectează-te cu ROeID pentru a te abona la notificările de autorizații care urmează să expire în viitorul apropiat și pentru a fi la curent cu starea autorizațiilor în curs de aprobare.
             </p>
 
+            {errorMessage ? (
+              <div className="mt-5 rounded-lg bg-destructive/10 px-4 py-3 text-left text-sm text-destructive">
+                {errorMessage}
+              </div>
+            ) : null}
+
             <div className="mt-6">
-              <Button
-                type="button"
-                disabled
-                className="h-10 w-full cursor-not-allowed justify-between gap-2 opacity-50"
+              <Link
+                href="/api/auth/roeid/login"
+                className={cn(
+                  buttonVariants({ variant: "default" }),
+                  "h-10 w-full cursor-pointer justify-center gap-2",
+                )}
               >
-                <span className="flex items-center gap-2">
-                  <Fingerprint className="size-4" aria-hidden />
-                  Conectează-te cu ROeID
-                </span>
-                <Badge className="border-warning/30 bg-warning/15 font-mono text-[9px] uppercase tracking-wider text-warning">
-                  Curând
-                </Badge>
-              </Button>
+                <Fingerprint className="size-4" aria-hidden />
+                Conectare cu ROeID
+              </Link>
 
               <a
                 href="https://www.roeid.ro"
@@ -84,6 +99,44 @@ export default function LoginPage() {
               <Map className="size-4" aria-hidden />
               Continuă ca vizitator
             </Link>
+          </Card>
+
+          <Card className="border-border bg-secondary/40 shadow-none">
+            <CardContent className="space-y-2 pt-4 text-left text-sm leading-relaxed text-muted-foreground">
+              <p>
+                Vă recomandăm să folosiți aplicația{" "}
+                <a
+                  href="https://www.roeid.ro/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-accent hover:underline"
+                >
+                  ROeID
+                </a>{" "}
+                pentru conectarea la eAvizat (sau nu?).
+              </p>
+              <p>
+                ROeID este o aplicație pe telefonul mobil pusă la dispoziție de către{" "}
+                <a
+                  href="https://adr.gov.ro/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-accent hover:underline"
+                >
+                  Autoritatea pentru Digitalizarea României
+                </a>
+                , notificată la{" "}
+                <a
+                  href="https://ec.europa.eu/digital-building-blocks/sites/display/EIDCOMMUNITY/Romania+-+ROeID"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-accent hover:underline"
+                >
+                  Comisia Europeană
+                </a>{" "}
+                ca modalitate oficială de identificare electronică în România.
+              </p>
+            </CardContent>
           </Card>
 
           <Card className="border-border bg-secondary/40 shadow-none">

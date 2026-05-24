@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,9 +14,10 @@ interface CaenSelectorProps {
 }
 
 export function CaenSelector({ compact }: CaenSelectorProps) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [options, setOptions] = useState<CaenOption[]>([]);
-  const { setSelectedCaen, setRoadmap, setShowRoadmap } = useAppStore();
+  const { selectedProperty, setSelectedCaen } = useAppStore();
 
   const search = async (q: string) => {
     setQuery(q);
@@ -39,14 +41,13 @@ export function CaenSelector({ compact }: CaenSelectorProps) {
     };
   }, []);
 
-  const selectCaen = async (code: string) => {
+  const selectCaen = (code: string) => {
     setSelectedCaen(code);
-    const res = await fetch(`/api/roadmap/${code}`);
-    if (res.ok) {
-      const roadmap = await res.json();
-      setRoadmap(roadmap);
-      setShowRoadmap(true);
+    const params = new URLSearchParams({ caen: code });
+    if (selectedProperty?.cadastralRef) {
+      params.set("cf", selectedProperty.cadastralRef);
     }
+    router.push(`/roadmap-caen?${params.toString()}`);
   };
 
   return (
