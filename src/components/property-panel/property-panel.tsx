@@ -333,7 +333,7 @@ export function PropertyPanel() {
 
   if (!selectedProperty && !loadingProperty && !loadingParcel) {
     return (
-      <div className="flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
+      <div className="map-property-sidebar-content flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
         <MapPin className="size-10 text-primary/40" aria-hidden />
         <h2 className="font-heading text-lg text-foreground">Selectați o locație</h2>
         <p className="text-sm text-foreground/70">
@@ -346,7 +346,7 @@ export function PropertyPanel() {
 
   if (loadingProperty || loadingParcel) {
     return (
-      <div className="flex h-full items-center justify-center gap-2 text-foreground">
+      <div className="map-property-sidebar-content flex h-full items-center justify-center gap-2 text-foreground">
         <Loader2 className="size-5 animate-spin" aria-hidden />
         <span className="text-sm">Se încarcă datele imobilului...</span>
       </div>
@@ -387,20 +387,20 @@ export function PropertyPanel() {
         </div>
 
         <Tabs defaultValue="rezumat" className="w-full">
-          <TabsList className="grid h-auto w-full grid-cols-3 gap-1 p-1 lg:grid-cols-5">
-            <TabsTrigger value="rezumat" className="cursor-pointer px-1 text-[10px] sm:text-xs">
+          <TabsList className="grid h-auto w-full grid-cols-3 gap-1 p-1 @min-[420px]/sidebar:grid-cols-5">
+            <TabsTrigger value="rezumat" className="cursor-pointer px-1">
               Rezumat
             </TabsTrigger>
-            <TabsTrigger value="cadastru" className="cursor-pointer px-1 text-[10px] sm:text-xs">
+            <TabsTrigger value="cadastru" className="cursor-pointer px-1">
               Cadastru
             </TabsTrigger>
-            <TabsTrigger value="cf" className="cursor-pointer px-1 text-[10px] sm:text-xs">
+            <TabsTrigger value="cf" className="cursor-pointer px-1">
               Carte funciară
             </TabsTrigger>
-            <TabsTrigger value="urbanism" className="cursor-pointer px-1 text-[10px] sm:text-xs">
+            <TabsTrigger value="urbanism" className="cursor-pointer px-1">
               Urbanism
             </TabsTrigger>
-            <TabsTrigger value="autorizatii" className="cursor-pointer px-1 text-[10px] sm:text-xs">
+            <TabsTrigger value="autorizatii" className="cursor-pointer px-1">
               Autorizații
             </TabsTrigger>
           </TabsList>
@@ -475,7 +475,6 @@ export function PropertyPanel() {
           </TabsContent>
 
           <TabsContent value="cf" className="mt-3 space-y-3">
-            {p.immobile?.length ? <ImobileSection parts={p.immobile} /> : null}
             <Card className="border-border">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-base">
