@@ -16,3 +16,6 @@ export const ANCPI_MAP_SERVER_URL =
 
 export const DISCLAIMER_RO =
   "Datele de carte funciară, urbanism și autorizații sunt demonstrative. Geometria parcelelor provine din ANCPI.";
+
+export const MAP_SIDEBAR_RESIZE_START = "eavizat-sidebar-resize-start";
+export const MAP_SIDEBAR_RESIZE_END = "eavizat-sidebar-resize-end";

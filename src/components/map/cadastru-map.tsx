@@ -3,7 +3,7 @@
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { CLUJ_BBOX, CLUJ_CENTER } from "@/lib/constants";
+import { CLUJ_BBOX, CLUJ_CENTER, MAP_SIDEBAR_RESIZE_END, MAP_SIDEBAR_RESIZE_START } from "@/lib/constants";
 import { getCadastralRef } from "@/lib/ancpi";
 import { getPropertyFromClick } from "@/lib/properties";
 import {
@@ -673,8 +673,58 @@ export function CadastruMap() {
       handleMapClick(e.lngLat.lng, e.lngLat.lat);
     });
 
+    const container = containerRef.current;
+    let lastWidth = 0;
+    let lastHeight = 0;
+    let resizeDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+    let sidebarResizing = false;
+
+    const applyMapResize = () => {
+      if (!container) return;
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      if (width === lastWidth && height === lastHeight) return;
+      lastWidth = width;
+      lastHeight = height;
+      map.resize();
+    };
+
+    const scheduleMapResize = () => {
+      if (resizeDebounceTimer) clearTimeout(resizeDebounceTimer);
+      resizeDebounceTimer = setTimeout(() => {
+        resizeDebounceTimer = undefined;
+        applyMapResize();
+      }, 150);
+    };
+
+    const onSidebarResizeStart = () => {
+      sidebarResizing = true;
+    };
+
+    const onSidebarResizeEnd = () => {
+      sidebarResizing = false;
+      if (resizeDebounceTimer) clearTimeout(resizeDebounceTimer);
+      requestAnimationFrame(applyMapResize);
+    };
+
+    const resizeObserver =
+      container &&
+      new ResizeObserver(() => {
+        if (sidebarResizing) return;
+        scheduleMapResize();
+      });
+    resizeObserver?.observe(container);
+    window.addEventListener(MAP_SIDEBAR_RESIZE_START, onSidebarResizeStart);
+    window.addEventListener(MAP_SIDEBAR_RESIZE_END, onSidebarResizeEnd);
+    window.addEventListener("resize", scheduleMapResize);
+
     return () => {
       if (loadTimeoutRef.current) clearTimeout(loadTimeoutRef.current);
+      if (resizeDebounceTimer) clearTimeout(resizeDebounceTimer);
+      resizeObserver?.disconnect();
+      window.removeEventListener(MAP_SIDEBAR_RESIZE_START, onSidebarResizeStart);
+      window.removeEventListener(MAP_SIDEBAR_RESIZE_END, onSidebarResizeEnd);
+      window.removeEventListener("resize", scheduleMapResize);
       themeObserver.disconnect();
       window.removeEventListener("eavizat-theme-change", syncTheme);
       parcelHoverBoundRef.current = false;
@@ -684,7 +734,7 @@ export function CadastruMap() {
   }, [handleMapClick, loadParcelsForBounds]);
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full overflow-hidden">
       <div ref={containerRef} className="h-full w-full" />
       <MapSearch onSelect={handleSearchSelect} />
       <MapLegend />
